@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundisa — Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14213D; --ink-soft:#2A3A5C;
+    --paper:#FBFAF7; --paper-dim:#F1F0EA; --card:#FFFFFF;
+    --gold:#E19A2E; --gold-dark:#93610D;
+    --green:#1F7A5C; --green-dark:#0F4A37;
+    --coral:#C7501F; --coral-dark:#7A3010;
+    --text:#1B1F2A; --text-muted:#5B6472; --border:#DEDBD1;
+    --radius:6px; --shadow:0 1px 2px rgba(20,33,61,0.06), 0 4px 14px rgba(20,33,61,0.06);
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--paper); color:var(--text); font-family:'Work Sans',sans-serif; line-height:1.5; }
+  h1,h2,h3{ font-family:'Fraunces',serif; font-weight:600; color:var(--ink); margin:0; }
+  button, input, select, textarea{ font-family:inherit; font-size:14px; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:var(--gold-dark); }
+  .wrap{ max-width:980px; margin:0 auto; padding:0 24px; }
+
+  /* LOGIN */
+  #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .login-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:36px 32px; width:100%; max-width:360px; box-shadow:var(--shadow); }
+  .login-card h1{ font-size:22px; margin-top:6px; }
+  .field{ margin-top:16px; }
+  .field label{ display:block; font-size:12.5px; color:var(--text-muted); margin-bottom:5px; }
+  .field input, .field select, .field textarea{
+    width:100%; padding:9px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--paper);
+  }
+  .field textarea{ resize:vertical; min-height:64px; }
+  .btn{
+    padding:10px 18px; border-radius:999px; border:1px solid var(--ink); background:var(--ink); color:#F4EFE2;
+    font-weight:500; cursor:pointer; font-size:13.5px;
+  }
+  .btn:hover{ background:var(--ink-soft); }
+  .btn:disabled{ opacity:0.55; cursor:default; }
+  .btn-ghost{ background:transparent; color:var(--ink); }
+  .btn-ghost:hover{ background:var(--paper-dim); }
+  .btn-danger{ border-color:var(--coral-dark); background:transparent; color:var(--coral-dark); }
+  .btn-danger:hover{ background:rgba(199,80,31,0.08); }
+  .btn-gold{ border-color:var(--gold); background:var(--gold); color:var(--ink); }
+  .btn-gold:hover{ background:#F0B24E; }
+  .error-text{ font-size:13px; color:var(--coral-dark); margin-top:12px; display:none; }
+
+  /* NAV */
+  nav{ background:var(--ink); color:#EDE7D6; }
+  .navrow{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; max-width:980px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:600; font-size:17px; }
+  .brand-mark{ width:24px; height:24px; border-radius:50%; background:var(--gold); color:var(--ink); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; }
+
+  /* DASHBOARD */
+  #dashboard{ display:none; }
+  .stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0; }
+  .stat-card{ background:var(--paper-dim); border-radius:var(--radius); padding:16px 18px; }
+  .stat-card b{ font-family:'Fraunces',serif; font-size:24px; display:block; }
+  .stat-card span{ font-size:12.5px; color:var(--text-muted); }
+
+  .tabs{ display:flex; gap:6px; border-bottom:1px solid var(--border); margin-bottom:20px; }
+  .tab-btn{ padding:10px 4px; margin-right:20px; border:none; background:none; cursor:pointer; font-size:14px; color:var(--text-muted); border-bottom:2px solid transparent; }
+  .tab-btn.active{ color:var(--ink); border-bottom-color:var(--gold); font-weight:500; }
+
+  .section-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th{ text-align:left; font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); padding:8px 10px; border-bottom:1px solid var(--border); }
+  td{ padding:10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tr:hover td{ background:var(--paper-dim); }
+  .row-actions{ display:flex; gap:8px; }
+  .row-actions button{ font-size:12px; padding:5px 10px; border-radius:999px; border:1px solid var(--border); background:var(--card); cursor:pointer; }
+  .row-actions button:hover{ border-color:var(--gold); }
+  .status-badge{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 8px; border-radius:4px; }
+  .status-open{ background:rgba(31,122,92,0.12); color:var(--green-dark); }
+  .status-upcoming{ background:rgba(225,154,46,0.16); color:var(--gold-dark); }
+  .status-closed{ background:rgba(91,100,114,0.14); color:var(--text-muted); }
+  .tag{ font-size:10.5px; font-family:'IBM Plex Mono',monospace; padding:2px 7px; border-radius:4px; background:var(--paper-dim); color:var(--ink-soft); margin:1px; display:inline-block; }
+
+  /* PANEL (add/edit form) */
+  .overlay{ display:none; position:fixed; inset:0; background:rgba(20,33,61,0.35); align-items:flex-start; justify-content:center; padding:40px 20px; overflow:auto; z-index:100; }
+  .overlay.show{ display:flex; }
+  .panel{ background:var(--card); border-radius:12px; padding:28px 30px; max-width:520px; width:100%; box-shadow:var(--shadow); }
+  .panel-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .panel-close{ background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .chip-suggest{ font-size:11px; font-family:'IBM Plex Mono',monospace; padding:3px 8px; border-radius:999px; border:1px solid var(--border); background:var(--paper); cursor:pointer; margin:3px 4px 0 0; display:inline-block; }
+  .panel-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+  .empty-note{ color:var(--text-muted); font-size:13.5px; padding:14px 0; }
+
+  footer{ text-align:center; padding:30px 0; font-size:12px; color:var(--text-muted); font-family:'IBM Plex Mono',monospace; }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <p class="eyebrow">Fundisa</p>
+    <h1>Admin login</h1>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginUsername">Username</label>
+        <input id="loginUsername" type="text" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn" type="submit" id="loginBtn" style="width:100%; margin-top:20px;">Log in</button>
+      <p class="error-text" id="loginError"></p>
+    </form>
+  </div>
+</div>
+
+<div id="dashboard">
+  <nav>
+    <div class="navrow">
+      <div class="brand"><span class="brand-mark">F</span>Fundisa admin</div>
+      <button class="btn btn-ghost" id="logoutBtn" style="color:#EDE7D6; border:1px solid #3C4B70;">Log out</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="stat-row">
+      <div class="stat-card"><b id="statTotal">—</b><span>total bursaries</span></div>
+      <div class="stat-card"><b id="statOpen">—</b><span>currently open</span></div>
+      <div class="stat-card"><b id="statSubs">—</b><span>notify subscribers</span></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="bursaries">Bursaries</button>
+      <button class="tab-btn" data-tab="subscribers">Subscribers</button>
+    </div>
+
+    <div id="bursariesTab">
+      <div class="section-top">
+        <p style="color:var(--text-muted); font-size:13.5px; margin:0;">Everything shown on the live site comes from this list.</p>
+        <button class="btn btn-gold" id="addBursaryBtn">+ Add bursary</button>
+      </div>
+      <table>
+        <thead><tr><th>Name</th><th>Fields</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
+        <tbody id="bursariesBody"></tbody>
+      </table>
+    </div>
+
+    <div id="subscribersTab" style="display:none;">
+      <p style="color:var(--text-muted); font-size:13.5px;">Students waiting to hear about new bursaries. No emails go out automatically yet — see the README for wiring that up.</p>
+      <table>
+        <thead><tr><th>Email</th><th>Field</th><th>Joined</th></tr></thead>
+        <tbody id="subscribersBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>FUNDISA ADMIN — CHANGES HERE UPDATE THE LIVE SITE IMMEDIATELY</footer>
+</div>
+
+<div class="overlay" id="formOverlay">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="panelTitle" style="font-size:19px;">Add bursary</h2>
+      <button class="panel-close" id="panelClose" aria-label="Close">✕</button>
+    </div>
+    <form id="bursaryForm">
+      <input type="hidden" id="bursaryId">
+      <div class="field"><label for="fName">Name</label><input id="fName" required></div>
+      <div class="field-row">
+        <div class="field"><label for="fProvider">Provider</label><input id="fProvider" required></div>
+        <div class="field"><label for="fStatus">Status</label>
+          <select id="fStatus"><option value="open">Open</option><option value="upcoming">Upcoming</option><option value="closed">Closed</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fFields">Fields of study (comma-separated)</label>
+        <input id="fFields" placeholder="Engineering, IT & Computer Science" required>
+        <div id="fieldSuggestions"></div>
+      </div>
+      <div class="field"><label for="fDeadline">Deadline</label><input id="fDeadline" placeholder="Closes 30 September 2026" required></div>
+      <div class="field"><label for="fDescription">Description</label><textarea id="fDescription"></textarea></div>
+      <div class="field"><label for="fEligibility">Eligibility</label><textarea id="fEligibility"></textarea></div>
+      <div class="field"><label for="fUrl">Official URL</label><input id="fUrl" placeholder="https://..."></div>
+      <p class="error-text" id="formError"></p>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-ghost" id="panelCancel">Cancel</button>
+        <button type="submit" class="btn" id="formSubmit">Save bursary</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const API_BASE = window.FUNDISA_API_BASE || 'http://localhost:3001';
+let token = null; // kept in memory only — logging out or refreshing clears it, by design
+let bursaries = [];
+let knownFields = [];
+let editingId = null;
+
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+// ---------- LOGIN ----------
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+  errorEl.style.display = 'none';
+  btn.disabled = true;
+  try {
+    const data = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+    token = data.token;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    await loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message || "Couldn't reach the backend. Is it running?";
+    errorEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  token = null;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPassword').value = '';
+});
+
+// ---------- TABS ----------
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.getElementById('bursariesTab').style.display = tab === 'bursaries' ? 'block' : 'none';
+    document.getElementById('subscribersTab').style.display = tab === 'subscribers' ? 'block' : 'none';
+  });
+});
+
+// ---------- LOAD ----------
+async function loadDashboard() {
+  const [bRes, fRes, sRes] = await Promise.all([
+    api('/api/bursaries'),
+    api('/api/fields'),
+    api('/api/notify')
+  ]);
+  bursaries = bRes.bursaries;
+  knownFields = fRes.fields.filter(f => f !== 'All');
+  renderStats(bursaries, sRes.subscribers);
+  renderBursariesTable();
+  renderSubscribersTable(sRes.subscribers);
+}
+
+function renderStats(bList, subs) {
+  document.getElementById('statTotal').textContent = bList.length;
+  document.getElementById('statOpen').textContent = bList.filter(b => b.status === 'open').length;
+  document.getElementById('statSubs').textContent = subs.length;
+}
+
+function renderBursariesTable() {
+  const body = document.getElementById('bursariesBody');
+  if (bursaries.length === 0) {
+    body.innerHTML = `<tr><td colspan="5" class="empty-note">No bursaries yet — add the first one.</td></tr>`;
+    return;
+  }
+  body.innerHTML = bursaries.map(b => `
+    <tr>
+      <td><strong>${escapeHtml(b.name)}</strong><br><span style="color:var(--text-muted); font-size:12px;">${escapeHtml(b.provider)}</span></td>
+      <td>${b.fields.map(f => `<span class="tag">${escapeHtml(f)}</span>`).join('')}</td>
+      <td>${escapeHtml(b.deadline)}</td>
+      <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+      <td>
+        <div class="row-actions">
+          <button data-action="edit" data-id="${b.id}">Edit</button>
+          <button data-action="delete" data-id="${b.id}">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  body.querySelectorAll('[data-action="edit"]').forEach(btn =>
+    btn.addEventListener('click', () => openForm(bursaries.find(b => b.id === btn.dataset.id)))
+  );
+  body.querySelectorAll('[data-action="delete"]').forEach(btn =>
+    btn.addEventListener('click', () => handleDelete(btn.dataset.id))
+  );
+}
+
+function renderSubscribersTable(subs) {
+  const body = document.getElementById('subscribersBody');
+  if (subs.length === 0) {
+    body.innerHTML = `<tr><td colspan="3" class="empty-note">No subscribers yet.</td></tr>`;
+    return;
+  }
+  body.innerHTML = subs.map(s => `
+    <tr><td>${escapeHtml(s.email)}</td><td>${escapeHtml(s.field || 'Any field')}</td><td>${escapeHtml(s.created_at)}</td></tr>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+// ---------- ADD / EDIT PANEL ----------
+function openForm(bursary) {
+  editingId = bursary ? bursary.id : null;
+  document.getElementById('panelTitle').textContent = bursary ? 'Edit bursary' : 'Add bursary';
+  document.getElementById('bursaryId').value = bursary ? bursary.id : '';
+  document.getElementById('fName').value = bursary ? bursary.name : '';
+  document.getElementById('fProvider').value = bursary ? bursary.provider : '';
+  document.getElementById('fStatus').value = bursary ? bursary.status : 'open';
+  document.getElementById('fFields').value = bursary ? bursary.fields.join(', ') : '';
+  document.getElementById('fDeadline').value = bursary ? bursary.deadline : '';
+  document.getElementById('fDescription').value = bursary ? (bursary.description || '') : '';
+  document.getElementById('fEligibility').value = bursary ? (bursary.eligibility || '') : '';
+  document.getElementById('fUrl').value = bursary ? (bursary.url || '') : '';
+  document.getElementById('formError').style.display = 'none';
+
+  const suggestBox = document.getElementById('fieldSuggestions');
+  suggestBox.innerHTML = knownFields.map(f => `<span class="chip-suggest" data-field="${escapeHtml(f)}">+ ${escapeHtml(f)}</span>`).join('');
+  suggestBox.querySelectorAll('.chip-suggest').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const input = document.getElementById('fFields');
+      const current = input.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (!current.includes(chip.dataset.field)) current.push(chip.dataset.field);
+      input.value = current.join(', ');
+    });
+  });
+
+  document.getElementById('formOverlay').classList.add('show');
+}
+
+function closeForm() {
+  document.getElementById('formOverlay').classList.remove('show');
+  editingId = null;
+}
+
+document.getElementById('addBursaryBtn').addEventListener('click', () => openForm(null));
+document.getElementById('panelClose').addEventListener('click', closeForm);
+document.getElementById('panelCancel').addEventListener('click', closeForm);
+document.getElementById('formOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'formOverlay') closeForm();
+});
+
+document.getElementById('bursaryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('formError');
+  const submitBtn = document.getElementById('formSubmit');
+  errorEl.style.display = 'none';
+
+  const fields = document.getElementById('fFields').value.split(',').map(s => s.trim()).filter(Boolean);
+  if (fields.length === 0) {
+    errorEl.textContent = 'Add at least one field of study.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const payload = {
+    name: document.getElementById('fName').value.trim(),
+    provider: document.getElementById('fProvider').value.trim(),
+    status: document.getElementById('fStatus').value,
+    fields,
+    deadline: document.getElementById('fDeadline').value.trim(),
+    description: document.getElementById('fDescription').value.trim(),
+    eligibility: document.getElementById('fEligibility').value.trim(),
+    url: document.getElementById('fUrl').value.trim()
+  };
+
+  submitBtn.disabled = true;
+  try {
+    if (editingId) {
+      await api(`/api/bursaries/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
+    } else {
+      await api('/api/bursaries', { method: 'POST', body: JSON.stringify(payload) });
+    }
+    closeForm();
+    await loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message || 'Could not save. Try again.';
+    errorEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+async function handleDelete(id) {
+  const bursary = bursaries.find(b => b.id === id);
+  if (!confirm(`Delete "${bursary ? bursary.name : id}"? This removes it from the live site immediately.`)) return;
+  try {
+    await api(`/api/bursaries/${id}`, { method: 'DELETE' });
+    await loadDashboard();
+  } catch (err) {
+    alert(err.message || 'Could not delete that bursary.');
+  }
+}
+</script>
+</body>
+</html>

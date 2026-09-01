@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundisa — Find the bursary that's already looking for you</title>
+<meta name="description" content="Fundisa tracks currently-open South African bursaries across every field of study and uses AI to match students to the ones that actually fit them.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://your-site.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fundisa — Find the bursary that's already looking for you">
+<meta property="og:description" content="Real, currently-open South African bursaries, filtered by field of study, with an AI assistant that matches you to the ones that fit.">
+<meta property="og:url" content="https://your-site.onrender.com/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fundisa — Find the bursary that's already looking for you">
+<meta name="twitter:description" content="Real, currently-open South African bursaries, filtered by field of study, with an AI assistant that matches you to the ones that fit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14213D;
+    --ink-soft:#2A3A5C;
+    --paper:#FBFAF7;
+    --paper-dim:#F1F0EA;
+    --card:#FFFFFF;
+    --gold:#E19A2E;
+    --gold-dark:#93610D;
+    --green:#1F7A5C;
+    --green-dark:#0F4A37;
+    --coral:#C7501F;
+    --coral-dark:#7A3010;
+    --text:#1B1F2A;
+    --text-muted:#5B6472;
+    --border:#DEDBD1;
+    --radius:6px;
+    --shadow: 0 1px 2px rgba(20,33,61,0.06), 0 4px 14px rgba(20,33,61,0.06);
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    color:var(--ink);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  a{ color:inherit; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+  }
+  button, input, select{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,250,247,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border);
+  }
+  .navrow{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:600; font-size:19px; color:var(--ink); text-decoration:none; }
+  .brand-mark{ width:26px; height:26px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; flex-shrink:0; }
+  .navlinks{ display:flex; gap:26px; font-size:14px; }
+  .navlinks a{ text-decoration:none; color:var(--ink-soft); }
+  .navlinks a:hover{ color:var(--gold-dark); }
+  .status-pill{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:4px 10px; border-radius:999px; }
+  .status-pill.connected{ background:rgba(31,122,92,0.12); color:var(--green-dark); }
+  .status-pill.offline{ background:rgba(199,80,31,0.12); color:var(--coral-dark); }
+  @media (max-width:640px){ .navlinks{ display:none; } }
+
+  .ticker-bar{ background:var(--ink); color:#EDE7D6; overflow:hidden; }
+  .ticker-track{ display:flex; align-items:center; gap:48px; padding:8px 0; white-space:nowrap; animation:scroll 32s linear infinite; width:max-content; }
+  @keyframes scroll{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .ticker-item{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; display:flex; align-items:center; gap:8px; }
+  .ticker-dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+
+  .hero{ padding:76px 0 56px; position:relative; }
+  .hero h1{ font-size:clamp(34px,5.6vw,58px); line-height:1.05; max-width:820px; }
+  .hero h1 em{ font-style:normal; color:var(--gold-dark); background:linear-gradient(to top, rgba(225,154,46,0.28) 38%, transparent 38%); padding:0 2px; }
+  .hero p.lede{ font-size:18px; color:var(--text-muted); max-width:540px; margin-top:18px; }
+  .stat-row{ display:flex; gap:36px; margin-top:38px; flex-wrap:wrap; }
+  .stat b{ font-family:'Fraunces',serif; font-size:28px; color:var(--ink); display:block; font-weight:600; }
+  .stat span{ font-size:13px; color:var(--text-muted); }
+
+  section{ padding:64px 0; }
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:30px; flex-wrap:wrap; }
+  .section-head h2{ font-size:clamp(24px,3.4vw,32px); margin-top:6px; }
+  .section-head p{ color:var(--text-muted); max-width:460px; font-size:15px; }
+
+  .filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .chip{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px;
+    padding:7px 13px; border-radius:999px; border:1px solid var(--border);
+    background:var(--card); cursor:pointer; color:var(--ink-soft);
+    transition:all .15s ease;
+  }
+  .chip:hover{ border-color:var(--gold); }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:#F4EFE2; }
+  .search-input{
+    width:100%; max-width:320px; padding:9px 13px; border-radius:999px;
+    border:1px solid var(--border); background:var(--card); font-size:14px; margin-bottom:18px;
+  }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
+  .bcard{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden;
+    opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;
+  }
+  .bcard.show{ opacity:1; transform:translateY(0); }
+  .bcard-top{ padding:18px 18px 16px; }
+  .bcard-provider{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); }
+  .bcard-name{ font-family:'Fraunces',serif; font-weight:600; font-size:19px; color:var(--ink); margin-top:4px; line-height:1.25; }
+  .bcard-desc{ font-size:13.5px; color:var(--text-muted); margin-top:8px; }
+  .bcard-tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .tag{ font-size:11px; font-family:'IBM Plex Mono',monospace; padding:3px 8px; border-radius:4px; background:var(--paper-dim); color:var(--ink-soft); }
+  .perforation{ position:relative; height:1px; border-top:1.5px dashed var(--border); margin:0 18px; }
+  .perforation::before, .perforation::after{ content:''; position:absolute; top:-6px; width:12px; height:12px; border-radius:50%; background:var(--paper); }
+  .perforation::before{ left:-24px; } .perforation::after{ right:-24px; }
+  .bcard-bottom{ padding:14px 18px 18px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .deadline{ font-family:'IBM Plex Mono',monospace; font-size:12px; }
+  .deadline.urgent{ color:var(--coral-dark); }
+  .deadline.open{ color:var(--green-dark); }
+  .bcard-link{ font-size:13px; font-weight:500; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--gold); white-space:nowrap; }
+  .bcard-link:hover{ color:var(--gold-dark); }
+  .match-seal{
+    position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:50%;
+    background:var(--gold); color:var(--ink); display:flex; align-items:center; justify-content:center;
+    flex-direction:column; font-family:'IBM Plex Mono',monospace; line-height:1; box-shadow:var(--shadow);
+  }
+  .match-seal b{ font-size:14px; } .match-seal span{ font-size:8px; }
+
+  .assistant{ background:var(--ink); border-radius:14px; padding:38px 32px; color:#EDE7D6; }
+  .assistant .section-head p, .assistant .section-head .eyebrow{ color:#B9C0D6; }
+  .assistant .section-head h2{ color:#FBFAF7; }
+  .ai-form{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+  .ai-form input{
+    flex:1; min-width:220px; padding:13px 16px; border-radius:999px; border:1px solid #3C4B70;
+    background:#1E2C4C; color:#F4EFE2; font-size:15px;
+  }
+  .ai-form input::placeholder{ color:#7D89A8; }
+  .ai-form button{
+    padding:13px 24px; border-radius:999px; border:none; background:var(--gold); color:var(--ink);
+    font-weight:600; cursor:pointer; font-size:14px; transition:background .15s ease;
+  }
+  .ai-form button:hover{ background:#F0B24E; }
+  .ai-form button:disabled{ opacity:0.6; cursor:default; }
+  .ai-hint{ font-size:12.5px; color:#8792AC; margin-top:10px; }
+  .ai-error{ font-size:13.5px; color:#F3B199; margin-top:14px; display:none; }
+  .ai-results{ margin-top:26px; display:grid; gap:14px; }
+  .ai-result{ background:#1E2C4C; border-radius:10px; padding:16px 18px; position:relative; }
+  .ai-result-name{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:#FBFAF7; padding-right:60px; }
+  .ai-result-why{ font-size:13.5px; color:#C6CCDE; margin-top:6px; }
+  .ai-loading{ display:none; align-items:center; gap:10px; margin-top:20px; font-size:13.5px; color:#B9C0D6; }
+  .spinner{ width:14px; height:14px; border-radius:50%; border:2px solid #3C4B70; border-top-color:var(--gold); animation:spin .7s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .quote-strip{
+    background:var(--paper-dim); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    padding:34px 0; text-align:center;
+  }
+  .quote-strip blockquote{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(18px,2.6vw,24px);
+    color:var(--ink); max-width:680px; margin:0 auto; transition:opacity .4s ease;
+  }
+  .quote-strip cite{ display:block; font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-muted); margin-top:12px; }
+
+  .notify-box{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px; }
+  .notify-box input{ padding:11px 15px; border-radius:999px; border:1px solid var(--border); font-size:14px; min-width:230px; }
+  .notify-box select{ padding:11px 15px; border-radius:999px; border:1px solid var(--border); font-size:14px; }
+  .notify-box button{ padding:11px 20px; border-radius:999px; border:1px solid var(--ink); background:var(--ink); color:#F4EFE2; font-weight:500; cursor:pointer; font-size:13.5px; }
+  .notify-box button:disabled{ opacity:0.6; cursor:default; }
+  .notify-msg{ font-size:13px; margin-top:10px; display:none; }
+
+  .about{ display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap; }
+  .about-note{
+    flex:1; min-width:280px; background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:26px 28px; position:relative; box-shadow:var(--shadow);
+  }
+  .about-note::before{ content:''; position:absolute; top:-8px; left:28px; width:52px; height:16px; background:rgba(225,154,46,0.35); transform:rotate(-2deg); }
+  .about-note h3{ font-size:20px; }
+  .about-note p{ font-size:14.5px; color:var(--text-muted); margin-top:10px; }
+  .signature{ font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--ink); margin-top:18px; }
+
+  footer{ padding:34px 0 50px; text-align:center; }
+  footer p{ font-size:12.5px; color:var(--text-muted); font-family:'IBM Plex Mono',monospace; }
+
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="navrow wrap">
+    <a href="#top" class="brand"><span class="brand-mark">F</span>Fundisa</a>
+    <div style="display:flex; align-items:center; gap:18px;">
+      <div class="navlinks">
+        <a href="#browse">Browse bursaries</a>
+        <a href="#assistant">Ask the assistant</a>
+        <a href="#about">About</a>
+      </div>
+      <span class="status-pill offline" id="apiStatus">connecting…</span>
+    </div>
+  </div>
+  <div class="ticker-bar" role="status" aria-label="Recent bursary alerts">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+</nav>
+
+<main id="top">
+  <header class="hero wrap">
+    <p class="eyebrow">Bursary alerts for South African students</p>
+    <h1>Find the <em>bursary</em> that's already looking for you.</h1>
+    <p class="lede">Fundisa tracks open bursaries across every field of study and tells you, in plain language, which ones actually fit you — no more scrolling through 40 tabs the week before a deadline.</p>
+    <div class="stat-row">
+      <div class="stat"><b id="statCount">—</b><span>open bursaries tracked</span></div>
+      <div class="stat"><b id="statFields">—</b><span>fields of study covered</span></div>
+      <div class="stat"><b>R0</b><span>cost to apply through Fundisa</span></div>
+    </div>
+  </header>
+
+  <section id="browse" class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">The catalogue</p>
+        <h2>Open bursaries, by field</h2>
+      </div>
+      <p>Real, currently-open South African bursaries, served live from the Fundisa database. Filter by field or search by name.</p>
+    </div>
+    <input class="search-input" id="searchInput" type="text" placeholder="Search by bursary or provider name…" aria-label="Search bursaries">
+    <div class="filter-row" id="filterRow"></div>
+    <div class="grid" id="bursaryGrid"><p style="color:var(--text-muted); font-size:14px;">Loading bursaries…</p></div>
+  </section>
+
+  <section class="quote-strip">
+    <blockquote id="quoteText">"Education is the most powerful weapon which you can use to change the world."</blockquote>
+    <cite id="quoteCite">— Nelson Mandela</cite>
+  </section>
+
+  <section id="assistant" class="wrap">
+    <div class="assistant">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">AI bursary matching</p>
+          <h2>Tell it your field. It'll find your fit.</h2>
+        </div>
+        <p>Describe what you're studying (or want to study) and the assistant will pull the closest matches from the catalogue and explain why each one fits.</p>
+      </div>
+      <form class="ai-form" id="aiForm">
+        <input type="text" id="aiInput" placeholder="e.g. second-year mechanical engineering student, or 'want to study law'" aria-label="Describe your field of study">
+        <button type="submit" id="aiSubmit">Find my matches</button>
+      </form>
+      <p class="ai-hint">Powered by Claude, running through the Fundisa backend — the assistant only sees bursaries that actually exist in the database.</p>
+      <p class="ai-error" id="aiError"></p>
+      <div class="ai-loading" id="aiLoading"><span class="spinner" aria-hidden="true"></span><span>Reading through the catalogue…</span></div>
+      <div class="ai-results" id="aiResults"></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Never miss a closing date</p>
+        <h2>Get notified when new bursaries open</h2>
+      </div>
+    </div>
+    <div class="notify-box">
+      <input type="email" id="notifyEmail" placeholder="you@email.com" aria-label="Email address">
+      <select id="notifyField" aria-label="Field of study"><option value="">Any field</option></select>
+      <button id="notifyBtn">Notify me</button>
+    </div>
+    <p class="notify-msg" id="notifyMsg"></p>
+  </section>
+
+  <section id="about" class="wrap">
+    <div class="about">
+      <div class="about-note">
+        <p class="eyebrow">Who built this</p>
+        <h3>A note from the creator</h3>
+        <p>Fundisa was designed and built by Nqobile, an aspiring software engineer. It started as a way to fix a problem a lot of students share: bursaries exist, but finding the right one, before the deadline passes, is harder than it should be.</p>
+        <p class="signature">— Nqobile</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p class="wrap">FUNDISA — BUILT BY NQOBILE · DATA SERVED FROM THE FUNDISA BACKEND · ALWAYS CONFIRM DETAILS ON THE OFFICIAL PROVIDER SITE BEFORE APPLYING</p>
+</footer>
+
+<script>
+// Point this at wherever the backend is running.
+// Local dev default matches backend/server.js's default port.
+const API_BASE = window.FUNDISA_API_BASE || 'http://localhost:3001';
+
+const QUOTES = [
+  { text:'Education is the most powerful weapon which you can use to change the world.', cite:'Nelson Mandela' },
+  { text:'The beautiful thing about learning is that no one can take it away from you.', cite:'B.B. King' },
+  { text:'An investment in knowledge pays the best interest.', cite:'Benjamin Franklin' },
+  { text:'The expert in anything was once a beginner.', cite:'Anonymous' },
+  { text:"Every application you submit is a door you didn't leave closed.", cite:'Fundisa' },
+  { text:'Success is the sum of small efforts, repeated day in and day out.', cite:'Robert Collier' },
+  { text:"Funding isn't luck. It's paperwork done on time.", cite:'Fundisa' }
+];
+
+let BURSARIES = [];
+let ALL_FIELDS = ['All'];
+let activeField = 'All';
+let searchTerm = '';
+
+async function api(path, options = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+function setApiStatus(connected){
+  const pill = document.getElementById('apiStatus');
+  pill.textContent = connected ? 'backend connected' : 'backend offline';
+  pill.className = 'status-pill ' + (connected ? 'connected' : 'offline');
+}
+
+function initTicker(){
+  const track = document.getElementById('tickerTrack');
+  const items = BURSARIES.filter(b => b.status === 'open').map(b =>
+    `<div class="ticker-item"><span class="ticker-dot" aria-hidden="true"></span>${b.name} — ${b.deadline}</div>`
+  ).join('');
+  track.innerHTML = items + items;
+}
+
+function initFilters(){
+  const row = document.getElementById('filterRow');
+  row.innerHTML = ALL_FIELDS.map(f =>
+    `<button class="chip${f===activeField?' active':''}" data-field="${f}">${f}</button>`
+  ).join('');
+  row.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      activeField = chip.dataset.field;
+      initFilters();
+      renderGrid();
+    });
+  });
+}
+
+function bcardHTML(b, matchPct){
+  const isUrgent = b.deadline.toLowerCase().includes('closes') || b.deadline.toLowerCase().includes('30 september');
+  const deadlineClass = isUrgent ? 'urgent' : 'open';
+  return `
+    <div class="bcard" style="position:relative;">
+      ${matchPct ? `<div class="match-seal"><b>${matchPct}%</b><span>MATCH</span></div>` : ''}
+      <div class="bcard-top">
+        <p class="bcard-provider">${b.provider}</p>
+        <h3 class="bcard-name">${b.name}</h3>
+        <p class="bcard-desc">${b.description || ''}</p>
+        <div class="bcard-tags">${b.fields.map(f=>`<span class="tag">${f}</span>`).join('')}</div>
+      </div>
+      <div class="perforation" aria-hidden="true"></div>
+      <div class="bcard-bottom">
+        <span class="deadline ${deadlineClass}">${b.deadline}</span>
+        <a class="bcard-link" href="${b.url}" target="_blank" rel="noopener">Learn more ↗</a>
+      </div>
+    </div>`;
+}
+
+function renderGrid(){
+  const grid = document.getElementById('bursaryGrid');
+  const term = searchTerm.trim().toLowerCase();
+  const list = BURSARIES.filter(b => {
+    const matchesField = activeField === 'All' || b.fields.includes(activeField);
+    const matchesSearch = !term || b.name.toLowerCase().includes(term) || b.provider.toLowerCase().includes(term);
+    return matchesField && matchesSearch;
+  });
+
+  if(list.length === 0){
+    grid.innerHTML = `<p style="color:var(--text-muted); font-size:14px;">No bursaries match that search — try a different field or term.</p>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(b => bcardHTML(b)).join('');
+  requestAnimationFrame(() => {
+    grid.querySelectorAll('.bcard').forEach((el, i) => {
+      setTimeout(() => el.classList.add('show'), i * 40);
+    });
+  });
+}
+
+function initQuotes(){
+  let i = 0;
+  const textEl = document.getElementById('quoteText');
+  const citeEl = document.getElementById('quoteCite');
+  setInterval(() => {
+    i = (i + 1) % QUOTES.length;
+    textEl.style.opacity = 0;
+    citeEl.style.opacity = 0;
+    setTimeout(() => {
+      textEl.textContent = `"${QUOTES[i].text}"`;
+      citeEl.textContent = `— ${QUOTES[i].cite}`;
+      textEl.style.opacity = 1;
+      citeEl.style.opacity = 1;
+    }, 400);
+  }, 7000);
+}
+
+function initNotify(){
+  const select = document.getElementById('notifyField');
+  ALL_FIELDS.filter(f => f !== 'All').forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f; opt.textContent = f;
+    select.appendChild(opt);
+  });
+
+  document.getElementById('notifyBtn').addEventListener('click', async () => {
+    const email = document.getElementById('notifyEmail').value.trim();
+    const field = document.getElementById('notifyField').value;
+    const msg = document.getElementById('notifyMsg');
+    const btn = document.getElementById('notifyBtn');
+
+    if(!email || !email.includes('@')){
+      msg.style.color = 'var(--coral-dark)';
+      msg.textContent = 'Enter a valid email first.';
+      msg.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    try {
+      await api('/api/notify', { method: 'POST', body: JSON.stringify({ email, field }) });
+      msg.style.color = 'var(--green-dark)';
+      msg.textContent = "You're on the list — we'll flag new bursaries in your field.";
+      document.getElementById('notifyEmail').value = '';
+    } catch (err) {
+      msg.style.color = 'var(--coral-dark)';
+      msg.textContent = "Couldn't save that just now — try again in a moment.";
+    } finally {
+      msg.style.display = 'block';
+      btn.disabled = false;
+    }
+  });
+}
+
+async function handleAISubmit(e){
+  e.preventDefault();
+  const input = document.getElementById('aiInput');
+  const query = input.value.trim();
+  const errorEl = document.getElementById('aiError');
+  const loadingEl = document.getElementById('aiLoading');
+  const resultsEl = document.getElementById('aiResults');
+  const submitBtn = document.getElementById('aiSubmit');
+
+  errorEl.style.display = 'none';
+  resultsEl.innerHTML = '';
+
+  if(!query){
+    errorEl.textContent = "Tell the assistant what you're studying first.";
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  loadingEl.style.display = 'flex';
+  submitBtn.disabled = true;
+
+  try {
+    const data = await api('/api/assistant', { method: 'POST', body: JSON.stringify({ query }) });
+    const matches = data.matches || [];
+
+    if(matches.length === 0){
+      resultsEl.innerHTML = `<p style="color:#B9C0D6; font-size:14px;">No strong matches in the current catalogue for that field yet — try rephrasing, or browse the full list above.</p>`;
+    } else {
+      resultsEl.innerHTML = matches.map(m => `
+        <div class="ai-result">
+          <div class="match-seal" style="position:absolute; top:14px; right:14px;"><b>${m.matchPct}%</b><span>MATCH</span></div>
+          <p class="ai-result-name">${m.bursary.name}</p>
+          <p class="ai-result-why">${m.why}</p>
+        </div>`).join('');
+    }
+  } catch (err) {
+    errorEl.textContent = err.message || "Couldn't reach the assistant just now — please try again in a moment.";
+    errorEl.style.display = 'block';
+  } finally {
+    loadingEl.style.display = 'none';
+    submitBtn.disabled = false;
+  }
+}
+
+async function boot(){
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchTerm = e.target.value;
+    renderGrid();
+  });
+  document.getElementById('aiForm').addEventListener('submit', handleAISubmit);
+  initQuotes();
+
+  try {
+    const [bursariesRes, fieldsRes] = await Promise.all([
+      api('/api/bursaries'),
+      api('/api/fields')
+    ]);
+    BURSARIES = bursariesRes.bursaries;
+    ALL_FIELDS = fieldsRes.fields;
+    setApiStatus(true);
+
+    document.getElementById('statCount').textContent = BURSARIES.filter(b => b.status === 'open').length;
+    document.getElementById('statFields').textContent = ALL_FIELDS.length - 1;
+
+    initTicker();
+    initFilters();
+    renderGrid();
+    initNotify();
+  } catch (err) {
+    setApiStatus(false);
+    document.getElementById('bursaryGrid').innerHTML =
+      `<p style="color:var(--coral-dark); font-size:14px;">Can't reach the Fundisa backend at ${API_BASE}. Make sure <code>node server.js</code> is running, then refresh.</p>`;
+  }
+}
+
+boot();
+</script>
+</body>
+</html>

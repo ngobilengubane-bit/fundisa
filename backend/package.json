@@ -1,0 +1,13 @@
+{
+  "name": "fundisa-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Fundisa — a bursary notification site for South African students",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file=.env server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
