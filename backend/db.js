@@ -42,6 +42,19 @@ db.exec(`
     username TEXT NOT NULL,
     expires_at INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS campaigns (
+    id TEXT PRIMARY KEY,
+    student_name TEXT NOT NULL,
+    title TEXT NOT NULL,
+    story TEXT NOT NULL,
+    field TEXT,
+    goal_amount INTEGER NOT NULL,
+    raised_amount INTEGER NOT NULL DEFAULT 0,
+    external_url TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'active',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // ---- seed bursaries on first run only ----

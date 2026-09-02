@@ -7,16 +7,16 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#14213D; --ink-soft:#2A3A5C;
+    --ink:#264C47; --ink-soft:#51706C;
     --paper:#FBFAF7; --paper-dim:#F1F0EA; --card:#FFFFFF;
-    --gold:#E19A2E; --gold-dark:#93610D;
+    --gold:#AE9572; --gold-dark:#655642; --gold-cta:#827056;
     --green:#1F7A5C; --green-dark:#0F4A37;
     --coral:#C7501F; --coral-dark:#7A3010;
     --text:#1B1F2A; --text-muted:#5B6472; --border:#DEDBD1;
-    --radius:6px; --shadow:0 1px 2px rgba(20,33,61,0.06), 0 4px 14px rgba(20,33,61,0.06);
+    --radius:6px; --shadow:0 1px 2px rgba(38,76,71,0.06), 0 4px 14px rgba(38,76,71,0.06);
   }
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--paper); color:var(--text); font-family:'Work Sans',sans-serif; line-height:1.5; }
@@ -46,15 +46,15 @@
   .btn-ghost:hover{ background:var(--paper-dim); }
   .btn-danger{ border-color:var(--coral-dark); background:transparent; color:var(--coral-dark); }
   .btn-danger:hover{ background:rgba(199,80,31,0.08); }
-  .btn-gold{ border-color:var(--gold); background:var(--gold); color:var(--ink); }
-  .btn-gold:hover{ background:#F0B24E; }
+  .btn-gold{ border-color:var(--gold-cta); background:var(--gold-cta); color:#fff; }
+  .btn-gold:hover{ background:#6E5D46; }
   .error-text{ font-size:13px; color:var(--coral-dark); margin-top:12px; display:none; }
 
   /* NAV */
   nav{ background:var(--ink); color:#EDE7D6; }
   .navrow{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; max-width:980px; margin:0 auto; }
-  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:600; font-size:17px; }
-  .brand-mark{ width:24px; height:24px; border-radius:50%; background:var(--gold); color:var(--ink); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Work Sans',sans-serif; font-weight:700; font-size:16px; letter-spacing:0.02em; text-transform:uppercase; }
+  .brand-mark{ width:24px; height:24px; border-radius:50%; background:var(--gold-cta); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; }
 
   /* DASHBOARD */
   #dashboard{ display:none; }
@@ -78,7 +78,7 @@
   .row-actions button:hover{ border-color:var(--gold); }
   .status-badge{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 8px; border-radius:4px; }
   .status-open{ background:rgba(31,122,92,0.12); color:var(--green-dark); }
-  .status-upcoming{ background:rgba(225,154,46,0.16); color:var(--gold-dark); }
+  .status-upcoming{ background:rgba(174,149,114,0.22); color:var(--gold-dark); }
   .status-closed{ background:rgba(91,100,114,0.14); color:var(--text-muted); }
   .tag{ font-size:10.5px; font-family:'IBM Plex Mono',monospace; padding:2px 7px; border-radius:4px; background:var(--paper-dim); color:var(--ink-soft); margin:1px; display:inline-block; }
 
@@ -134,6 +134,7 @@
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="bursaries">Bursaries</button>
+      <button class="tab-btn" data-tab="campaigns">Fundraisers</button>
       <button class="tab-btn" data-tab="subscribers">Subscribers</button>
     </div>
 
@@ -145,6 +146,17 @@
       <table>
         <thead><tr><th>Name</th><th>Fields</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
         <tbody id="bursariesBody"></tbody>
+      </table>
+    </div>
+
+    <div id="campaignsTab" style="display:none;">
+      <div class="section-top">
+        <p style="color:var(--text-muted); font-size:13.5px; margin:0;">Fundisa never processes donations — the "external URL" is the student's own verified fundraising page.</p>
+        <button class="btn btn-gold" id="addCampaignBtn">+ Add fundraiser</button>
+      </div>
+      <table>
+        <thead><tr><th>Student / campaign</th><th>Raised / Goal</th><th>Status</th><th></th></tr></thead>
+        <tbody id="campaignsBody"></tbody>
       </table>
     </div>
 
@@ -193,12 +205,45 @@
   </div>
 </div>
 
+<div class="overlay" id="campaignOverlay">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="campaignPanelTitle" style="font-size:19px;">Add fundraiser</h2>
+      <button class="panel-close" id="campaignPanelClose" aria-label="Close">✕</button>
+    </div>
+    <form id="campaignForm">
+      <input type="hidden" id="cId">
+      <div class="field"><label for="cStudentName">Student name</label><input id="cStudentName" required></div>
+      <div class="field"><label for="cTitle">Campaign title</label><input id="cTitle" placeholder="Help me cover my registration deposit" required></div>
+      <div class="field"><label for="cStory">Story</label><textarea id="cStory" required></textarea></div>
+      <div class="field-row">
+        <div class="field"><label for="cField">Field of study (optional)</label><input id="cField"></div>
+        <div class="field"><label for="cStatus">Status</label>
+          <select id="cStatus"><option value="active">Active</option><option value="closed">Closed</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="cGoal">Goal (Rand)</label><input id="cGoal" type="number" min="0" required></div>
+        <div class="field"><label for="cRaised">Raised so far (Rand)</label><input id="cRaised" type="number" min="0"></div>
+      </div>
+      <div class="field"><label for="cUrl">External donation URL</label><input id="cUrl" placeholder="https://www.backabuddy.co.za/..." required></div>
+      <p class="error-text" id="campaignFormError"></p>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-ghost" id="campaignPanelCancel">Cancel</button>
+        <button type="submit" class="btn" id="campaignFormSubmit">Save fundraiser</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
-const API_BASE = window.FUNDISA_API_BASE || 'http://localhost:3001';
+const API_BASE = window.FUNDISA_API_BASE || 'https://fundisa-backend.onrender.com';
 let token = null; // kept in memory only — logging out or refreshing clears it, by design
 let bursaries = [];
+let campaigns = [];
 let knownFields = [];
 let editingId = null;
+let editingCampaignId = null;
 
 async function api(path, options = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
@@ -246,22 +291,26 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.add('active');
     const tab = btn.dataset.tab;
     document.getElementById('bursariesTab').style.display = tab === 'bursaries' ? 'block' : 'none';
+    document.getElementById('campaignsTab').style.display = tab === 'campaigns' ? 'block' : 'none';
     document.getElementById('subscribersTab').style.display = tab === 'subscribers' ? 'block' : 'none';
   });
 });
 
 // ---------- LOAD ----------
 async function loadDashboard() {
-  const [bRes, fRes, sRes] = await Promise.all([
+  const [bRes, fRes, sRes, cRes] = await Promise.all([
     api('/api/bursaries'),
     api('/api/fields'),
-    api('/api/notify')
+    api('/api/notify'),
+    api('/api/campaigns')
   ]);
   bursaries = bRes.bursaries;
   knownFields = fRes.fields.filter(f => f !== 'All');
+  campaigns = cRes.campaigns;
   renderStats(bursaries, sRes.subscribers);
   renderBursariesTable();
   renderSubscribersTable(sRes.subscribers);
+  renderCampaignsTable();
 }
 
 function renderStats(bList, subs) {
@@ -307,6 +356,35 @@ function renderSubscribersTable(subs) {
   body.innerHTML = subs.map(s => `
     <tr><td>${escapeHtml(s.email)}</td><td>${escapeHtml(s.field || 'Any field')}</td><td>${escapeHtml(s.created_at)}</td></tr>
   `).join('');
+}
+
+function formatRandAdmin(n){ return 'R' + Number(n).toLocaleString('en-ZA'); }
+
+function renderCampaignsTable() {
+  const body = document.getElementById('campaignsBody');
+  if (campaigns.length === 0) {
+    body.innerHTML = `<tr><td colspan="4" class="empty-note">No fundraisers yet — add one for a student who needs it.</td></tr>`;
+    return;
+  }
+  body.innerHTML = campaigns.map(c => `
+    <tr>
+      <td><strong>${escapeHtml(c.title)}</strong><br><span style="color:var(--text-muted); font-size:12px;">${escapeHtml(c.student_name)}${c.field ? ' · ' + escapeHtml(c.field) : ''}</span></td>
+      <td>${formatRandAdmin(c.raised_amount)} / ${formatRandAdmin(c.goal_amount)}</td>
+      <td><span class="status-badge status-${c.status === 'active' ? 'open' : 'closed'}">${c.status}</span></td>
+      <td>
+        <div class="row-actions">
+          <button data-caction="edit" data-id="${c.id}">Edit</button>
+          <button data-caction="delete" data-id="${c.id}">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  body.querySelectorAll('[data-caction="edit"]').forEach(btn =>
+    btn.addEventListener('click', () => openCampaignForm(campaigns.find(c => c.id === btn.dataset.id)))
+  );
+  body.querySelectorAll('[data-caction="delete"]').forEach(btn =>
+    btn.addEventListener('click', () => handleCampaignDelete(btn.dataset.id))
+  );
 }
 
 function escapeHtml(str) {
@@ -405,6 +483,87 @@ async function handleDelete(id) {
     await loadDashboard();
   } catch (err) {
     alert(err.message || 'Could not delete that bursary.');
+  }
+}
+
+// ---------- CAMPAIGN ADD / EDIT PANEL ----------
+function openCampaignForm(campaign) {
+  editingCampaignId = campaign ? campaign.id : null;
+  document.getElementById('campaignPanelTitle').textContent = campaign ? 'Edit fundraiser' : 'Add fundraiser';
+  document.getElementById('cId').value = campaign ? campaign.id : '';
+  document.getElementById('cStudentName').value = campaign ? campaign.student_name : '';
+  document.getElementById('cTitle').value = campaign ? campaign.title : '';
+  document.getElementById('cStory').value = campaign ? campaign.story : '';
+  document.getElementById('cField').value = campaign ? (campaign.field || '') : '';
+  document.getElementById('cStatus').value = campaign ? campaign.status : 'active';
+  document.getElementById('cGoal').value = campaign ? campaign.goal_amount : '';
+  document.getElementById('cRaised').value = campaign ? campaign.raised_amount : 0;
+  document.getElementById('cUrl').value = campaign ? campaign.external_url : '';
+  document.getElementById('campaignFormError').style.display = 'none';
+  document.getElementById('campaignOverlay').classList.add('show');
+}
+
+function closeCampaignForm() {
+  document.getElementById('campaignOverlay').classList.remove('show');
+  editingCampaignId = null;
+}
+
+document.getElementById('addCampaignBtn').addEventListener('click', () => openCampaignForm(null));
+document.getElementById('campaignPanelClose').addEventListener('click', closeCampaignForm);
+document.getElementById('campaignPanelCancel').addEventListener('click', closeCampaignForm);
+document.getElementById('campaignOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'campaignOverlay') closeCampaignForm();
+});
+
+document.getElementById('campaignForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('campaignFormError');
+  const submitBtn = document.getElementById('campaignFormSubmit');
+  errorEl.style.display = 'none';
+
+  const goal = Number(document.getElementById('cGoal').value);
+  if (!goal || goal <= 0) {
+    errorEl.textContent = 'Enter a goal amount greater than 0.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const payload = {
+    student_name: document.getElementById('cStudentName').value.trim(),
+    title: document.getElementById('cTitle').value.trim(),
+    story: document.getElementById('cStory').value.trim(),
+    field: document.getElementById('cField').value.trim(),
+    status: document.getElementById('cStatus').value,
+    goal_amount: goal,
+    raised_amount: Number(document.getElementById('cRaised').value) || 0,
+    external_url: document.getElementById('cUrl').value.trim()
+  };
+
+  submitBtn.disabled = true;
+  try {
+    if (editingCampaignId) {
+      await api(`/api/campaigns/${editingCampaignId}`, { method: 'PUT', body: JSON.stringify(payload) });
+    } else {
+      await api('/api/campaigns', { method: 'POST', body: JSON.stringify(payload) });
+    }
+    closeCampaignForm();
+    await loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message || 'Could not save. Try again.';
+    errorEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+async function handleCampaignDelete(id) {
+  const campaign = campaigns.find(c => c.id === id);
+  if (!confirm(`Delete "${campaign ? campaign.title : id}"? This removes it from the live site immediately.`)) return;
+  try {
+    await api(`/api/campaigns/${id}`, { method: 'DELETE' });
+    await loadDashboard();
+  } catch (err) {
+    alert(err.message || 'Could not delete that fundraiser.');
   }
 }
 </script>

@@ -22,7 +22,7 @@ cp .env.example .env
 ```
 
 Open `.env` and fill in:
-- `ANTHROPIC_API_KEY` — get one at https://console.anthropic.com. Without this, everything works except the AI assistant.
+- `GEMINI_API_KEY` — get one free at https://aistudio.google.com/apikey. Without this, everything works except the AI assistant and letter helper. Note: Google's free tier may use submitted prompts to improve their products (paid tier doesn't) — worth knowing since the letter assistant handles personal circumstances. See the endpoint table below for more.
 - `ADMIN_USERNAME` / `ADMIN_PASSWORD` — your login for adding/editing bursaries. Change the password from the default.
 
 Then start it:
@@ -54,6 +54,14 @@ If you deploy the backend somewhere other than `localhost:3001`, update
 the `API_BASE` line near the top of `frontend/index.html`'s `<script>`,
 or set `window.FUNDISA_API_BASE` before the script runs.
 
+**Branding:** the logo lives at `frontend/assets/fundisa-logo.jpg`,
+shown in the hero. The site's colors (`--ink` #264C47, `--gold` #AE9572,
+plus a darker `--gold-cta` #827056 used specifically on buttons/badges
+for contrast) were sampled directly from that image. If the logo ever
+changes, re-sample the colors rather than eyeballing new ones — the
+current values were checked against WCAG AA contrast ratios for every
+place they're used as text or a button fill.
+
 ## 3. Admin dashboard
 
 Open `frontend/admin.html` in a browser (backend must be running). Log in
@@ -82,9 +90,50 @@ would be a reasonable thing to add later if it becomes annoying.
 | POST | `/api/notify` | — | Subscribe an email for alerts |
 | GET | `/api/notify` | admin | List subscribers |
 | POST | `/api/admin/login` | — | Log in, returns a bearer token |
-| POST | `/api/assistant` | — | AI bursary matching (needs `ANTHROPIC_API_KEY`) |
+| POST | `/api/assistant` | — | AI bursary matching (needs `GEMINI_API_KEY`) |
+| POST | `/api/letter-assistant` | — | AI motivational-letter drafting (needs `GEMINI_API_KEY`) |
+| GET | `/api/campaigns` | — | List student fundraisers |
+| POST | `/api/campaigns` | admin | Add a fundraiser |
+| PUT | `/api/campaigns/:id` | admin | Edit a fundraiser (e.g. update `raised_amount`) |
+| DELETE | `/api/campaigns/:id` | admin | Remove a fundraiser |
 
 Admin routes expect `Authorization: Bearer <token>` from `/api/admin/login`.
+
+### On the AI model: Gemini, not Claude
+
+Both AI features run on Google's Gemini API (`GEMINI_API_KEY`), switched
+from Anthropic's Claude to avoid USD-denominated API costs. The model is
+set via `GEMINI_MODEL` in `.env`, defaulting to `gemini-flash-lite-latest`
+— an alias Google auto-updates to the newest Flash-Lite release, chosen
+specifically so this doesn't silently break every time Google retires a
+model version (which happens often: several 2.0-era models were shut
+down mid-2026, and 2.5 Pro follows in October). If responses ever start
+erroring after a while with no code changes, check Google AI Studio's
+model list — the alias may have moved, or free-tier quotas may have
+changed. Google's Gemini docs list current models and rate limits.
+
+### On the fundraiser feature: Fundisa doesn't touch the money
+
+Every campaign has an `external_url` — that's the student's own real donation
+page (BackaBuddy, GoFundMe, a bank EFT page, whatever they already use).
+Fundisa lists the story and links out; it doesn't collect, hold, or move
+money itself. `goal_amount` and `raised_amount` are numbers an admin
+enters and updates by hand — there's no live payment sync, because
+there's no in-house payment processing to sync with.
+
+This is deliberate, not a shortcut to fix later: actually processing
+donations means becoming a registered payment handler, with all the
+compliance, licensing, and liability that involves. That's a real
+business decision, not a coding task — if it's ever worth pursuing,
+it needs its own research, not an assumption baked into the code.
+
+### AI letter assistant: what it will and won't do
+
+It only writes from what the student actually tells it — the prompt
+explicitly forbids inventing achievements, grades, or circumstances.
+The output is meant as a first draft for the student to personalize and
+fact-check, not something to copy-paste and submit. Both the API
+response and the UI say this; don't remove that framing if you edit it.
 
 ### Adding a bursary yourself (example)
 
@@ -107,7 +156,7 @@ curl -X POST http://localhost:3001/api/bursaries \
 ```
 
 That's the raw API — day to day, use `frontend/admin.html` instead
-(see section 3 above).
+(see section 3 above, now with a Fundraisers tab too).
 
 ## 5. Deploying for real (Render, free tier)
 
@@ -125,7 +174,7 @@ require a card:
    `--env-file` hard-fails if the file it names doesn't exist). Instance
    type: Free.
 4. **Add environment variables** in the service's Environment tab:
-   `ANTHROPIC_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`. Deploy, then
+   `GEMINI_API_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`. Deploy, then
    copy the `.onrender.com` URL you're given.
 5. **Update `API_BASE`** in both `frontend/index.html` and
    `frontend/admin.html` to that URL, replacing
@@ -133,6 +182,14 @@ require a card:
 6. **New → Static Site** → same repo. Root Directory: `frontend`.
    Build Command: blank. Publish Directory: `.` (a single dot). Deploy —
    this second URL is your actual website.
+
+### Updating an already-deployed backend
+
+Render auto-redeploys on every `git push` to the branch it's watching —
+so after any backend change (new routes, bug fixes), just commit and
+push as usual. No extra step in the Render dashboard needed. Watch the
+service's Logs tab if you want to confirm the new deploy actually
+started and finished.
 
 ### The free-tier trade-off
 

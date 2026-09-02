@@ -16,16 +16,17 @@
 <meta name="twitter:description" content="Real, currently-open South African bursaries, filtered by field of study, with an AI assistant that matches you to the ones that fit.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#14213D;
-    --ink-soft:#2A3A5C;
+    --ink:#264C47;
+    --ink-soft:#51706C;
     --paper:#FBFAF7;
     --paper-dim:#F1F0EA;
     --card:#FFFFFF;
-    --gold:#E19A2E;
-    --gold-dark:#93610D;
+    --gold:#AE9572;
+    --gold-dark:#655642;
+    --gold-cta:#827056;
     --green:#1F7A5C;
     --green-dark:#0F4A37;
     --coral:#C7501F;
@@ -38,9 +39,46 @@
   }
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    .reveal{ opacity:1 !important; transform:none !important; }
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
+
+  /* SCROLL REVEAL */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  /* SKELETON LOADERS */
+  .skel{
+    background:linear-gradient(100deg, var(--paper-dim) 30%, #EAE6D9 45%, var(--paper-dim) 60%);
+    background-size:300% 100%;
+    animation:skel-shimmer 1.5s ease-in-out infinite;
+    border-radius:4px;
+    display:block;
+  }
+  @keyframes skel-shimmer{ 0%{ background-position:120% 0; } 100%{ background-position:-20% 0; } }
+  .skel-card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
+  .skel-line{ height:11px; margin-bottom:10px; }
+  .skel-line.w-40{ width:40%; } .skel-line.w-60{ width:60%; } .skel-line.w-80{ width:80%; } .skel-line.w-100{ width:100%; }
+  .skel-line.tall{ height:18px; margin-bottom:14px; }
+
+  /* MICRO-INTERACTIONS */
+  .navlinks a{ position:relative; }
+  .navlinks a::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:var(--gold-cta);
+    transition:width .25s ease;
+  }
+  .navlinks a:hover::after{ width:100%; }
+  .chip{ transition:transform .15s ease, border-color .15s ease, background .15s ease; }
+  .chip:hover{ transform:translateY(-1px); }
+  .chip:active{ transform:translateY(0) scale(0.97); }
+  .bcard{ transition:opacity .5s ease, transform .3s ease, box-shadow .3s ease; }
+  .bcard:hover{ transform:translateY(-3px); box-shadow:0 4px 10px rgba(38,76,71,0.1), 0 10px 26px rgba(38,76,71,0.12); }
+  button{ transition:transform .12s ease, background .15s ease, box-shadow .15s ease; }
+  button:active:not(:disabled){ transform:scale(0.96); }
+  .bcard-link{ transition:color .15s ease; }
+  .progress-fill{ transition:width 1s cubic-bezier(.22,.9,.34,1); }
+
   body{
     margin:0;
     background:var(--paper);
@@ -75,8 +113,8 @@
     border-bottom:1px solid var(--border);
   }
   .navrow{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
-  .brand{ display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:600; font-size:19px; color:var(--ink); text-decoration:none; }
-  .brand-mark{ width:26px; height:26px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; flex-shrink:0; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Work Sans',sans-serif; font-weight:700; font-size:18px; letter-spacing:0.02em; text-transform:uppercase; color:var(--ink); text-decoration:none; }
+  .brand-mark{ width:26px; height:26px; border-radius:50%; background:var(--gold-cta); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; flex-shrink:0; }
   .navlinks{ display:flex; gap:26px; font-size:14px; }
   .navlinks a{ text-decoration:none; color:var(--ink-soft); }
   .navlinks a:hover{ color:var(--gold-dark); }
@@ -92,12 +130,24 @@
   .ticker-dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); flex-shrink:0; }
 
   .hero{ padding:76px 0 56px; position:relative; }
+  .hero-row{ display:flex; align-items:center; gap:48px; }
+  .hero-copy{ flex:1.3; min-width:0; }
   .hero h1{ font-size:clamp(34px,5.6vw,58px); line-height:1.05; max-width:820px; }
-  .hero h1 em{ font-style:normal; color:var(--gold-dark); background:linear-gradient(to top, rgba(225,154,46,0.28) 38%, transparent 38%); padding:0 2px; }
+  .hero h1 em{ font-style:normal; color:var(--gold-dark); background:linear-gradient(to top, rgba(174,149,114,0.32) 38%, transparent 38%); padding:0 2px; }
   .hero p.lede{ font-size:18px; color:var(--text-muted); max-width:540px; margin-top:18px; }
   .stat-row{ display:flex; gap:36px; margin-top:38px; flex-wrap:wrap; }
   .stat b{ font-family:'Fraunces',serif; font-size:28px; color:var(--ink); display:block; font-weight:600; }
   .stat span{ font-size:13px; color:var(--text-muted); }
+  .hero-logo{ flex:1; min-width:240px; display:flex; justify-content:center; }
+  .hero-logo img{
+    width:100%; max-width:340px; border-radius:10px; transform:rotate(-1.5deg);
+    box-shadow:0 8px 28px rgba(38,76,71,0.18), 0 2px 6px rgba(38,76,71,0.1);
+    border:1px solid var(--border);
+  }
+  @media (max-width:760px){
+    .hero-row{ flex-direction:column-reverse; gap:32px; }
+    .hero-logo img{ max-width:260px; transform:rotate(-1deg); }
+  }
 
   section{ padding:64px 0; }
   .section-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:30px; flex-wrap:wrap; }
@@ -105,6 +155,14 @@
   .section-head p{ color:var(--text-muted); max-width:460px; font-size:15px; }
 
   .filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .chart-panel{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px 22px; margin-bottom:26px;
+  }
+  .chart-panel-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
+  .chart-panel-head h3{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:var(--ink); }
+  .chart-panel-head span{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-muted); }
+  .chart-canvas-wrap{ height:180px; position:relative; }
   .chip{
     font-family:'IBM Plex Mono', monospace; font-size:12.5px;
     padding:7px 13px; border-radius:999px; border:1px solid var(--border);
@@ -142,7 +200,7 @@
   .bcard-link:hover{ color:var(--gold-dark); }
   .match-seal{
     position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:50%;
-    background:var(--gold); color:var(--ink); display:flex; align-items:center; justify-content:center;
+    background:var(--gold-cta); color:#fff; display:flex; align-items:center; justify-content:center;
     flex-direction:column; font-family:'IBM Plex Mono',monospace; line-height:1; box-shadow:var(--shadow);
   }
   .match-seal b{ font-size:14px; } .match-seal span{ font-size:8px; }
@@ -157,13 +215,55 @@
   }
   .ai-form input::placeholder{ color:#7D89A8; }
   .ai-form button{
-    padding:13px 24px; border-radius:999px; border:none; background:var(--gold); color:var(--ink);
+    padding:13px 24px; border-radius:999px; border:none; background:var(--gold-cta); color:#fff;
     font-weight:600; cursor:pointer; font-size:14px; transition:background .15s ease;
   }
-  .ai-form button:hover{ background:#F0B24E; }
+  .ai-form button:hover{ background:#6E5D46; }
   .ai-form button:disabled{ opacity:0.6; cursor:default; }
   .ai-hint{ font-size:12.5px; color:#8792AC; margin-top:10px; }
   .ai-error{ font-size:13.5px; color:#F3B199; margin-top:14px; display:none; }
+
+  /* CAMPAIGN PROGRESS */
+  .progress-track{ height:8px; border-radius:999px; background:var(--paper-dim); overflow:hidden; margin-top:12px; }
+  .progress-fill{ height:100%; background:var(--gold-cta); border-radius:999px; }
+  .campaign-meta{ display:flex; justify-content:space-between; font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); margin-top:6px; }
+  .campaign-meta b{ color:var(--ink); }
+
+  /* LETTER FORM */
+  .letter-form{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .letter-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .letter-row input{ flex:1; min-width:200px; }
+  .letter-form input, .letter-form textarea{
+    padding:13px 16px; border-radius:14px; border:1px solid #3C4B70; background:#1E2C4C; color:#F4EFE2;
+    font-size:15px; font-family:inherit;
+  }
+  .letter-form input::placeholder, .letter-form textarea::placeholder{ color:#7D89A8; }
+  .letter-form textarea{ min-height:110px; resize:vertical; }
+  .letter-form button{
+    align-self:flex-start; padding:13px 24px; border-radius:999px; border:none; background:var(--gold-cta);
+    color:#fff; font-weight:600; cursor:pointer; font-size:14px; transition:background .15s ease;
+  }
+  .letter-form button:hover{ background:#6E5D46; }
+  .letter-form button:disabled{ opacity:0.6; cursor:default; }
+  .letter-output{ margin-top:22px; background:#1E2C4C; border-radius:10px; padding:20px 22px; display:none; }
+  .letter-text{ font-size:14.5px; color:#E4E0D3; white-space:pre-wrap; line-height:1.7; }
+  .letter-copy-btn{ margin-top:14px; padding:8px 16px; border-radius:999px; border:1px solid #3C4B70; background:transparent; color:#F4EFE2; cursor:pointer; font-size:12.5px; }
+  .letter-copy-btn:hover{ border-color:var(--gold); }
+
+  /* FUNDRAISER NOTE */
+  .fundraiser-note{ font-size:13.5px; color:var(--text-muted); margin-bottom:22px; max-width:560px; }
+
+  .about-note{
+    flex:1; min-width:280px; background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:26px 28px; position:relative; box-shadow:var(--shadow);
+  }
+  .about-note::before{ content:''; position:absolute; top:-8px; left:28px; width:52px; height:16px; background:rgba(174,149,114,0.4); transform:rotate(-2deg); }
+  .about-note h3{ font-size:20px; }
+  .about-note p{ font-size:14.5px; color:var(--text-muted); margin-top:10px; }
+  .founder-name{ font-family:'Fraunces',serif; font-weight:600; font-size:22px; color:var(--ink); margin-top:8px; }
+  .founder-title{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--gold-dark); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px; }
+  .founder-quote{ margin:22px 0 0; padding-left:18px; border-left:3px solid var(--gold); font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink); line-height:1.5; }
+  .founder-quote cite{ display:block; font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-muted); margin-top:10px; }
   .ai-results{ margin-top:26px; display:grid; gap:14px; }
   .ai-result{ background:#1E2C4C; border-radius:10px; padding:16px 18px; position:relative; }
   .ai-result-name{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:#FBFAF7; padding-right:60px; }
@@ -190,13 +290,6 @@
   .notify-msg{ font-size:13px; margin-top:10px; display:none; }
 
   .about{ display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap; }
-  .about-note{
-    flex:1; min-width:280px; background:var(--card); border:1px solid var(--border); border-radius:12px;
-    padding:26px 28px; position:relative; box-shadow:var(--shadow);
-  }
-  .about-note::before{ content:''; position:absolute; top:-8px; left:28px; width:52px; height:16px; background:rgba(225,154,46,0.35); transform:rotate(-2deg); }
-  .about-note h3{ font-size:20px; }
-  .about-note p{ font-size:14.5px; color:var(--text-muted); margin-top:10px; }
   .signature{ font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--ink); margin-top:18px; }
 
   footer{ padding:34px 0 50px; text-align:center; }
@@ -204,6 +297,7 @@
 
   .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -213,7 +307,8 @@
     <div style="display:flex; align-items:center; gap:18px;">
       <div class="navlinks">
         <a href="#browse">Browse bursaries</a>
-        <a href="#assistant">Ask the assistant</a>
+        <a href="#fundraisers">Fundraisers</a>
+        <a href="#letter-helper">Letter helper</a>
         <a href="#about">About</a>
       </div>
       <span class="status-pill offline" id="apiStatus">connecting…</span>
@@ -226,27 +321,41 @@
 
 <main id="top">
   <header class="hero wrap">
-    <p class="eyebrow">Bursary alerts for South African students</p>
-    <h1>Find the <em>bursary</em> that's already looking for you.</h1>
-    <p class="lede">Fundisa tracks open bursaries across every field of study and tells you, in plain language, which ones actually fit you — no more scrolling through 40 tabs the week before a deadline.</p>
-    <div class="stat-row">
-      <div class="stat"><b id="statCount">—</b><span>open bursaries tracked</span></div>
-      <div class="stat"><b id="statFields">—</b><span>fields of study covered</span></div>
-      <div class="stat"><b>R0</b><span>cost to apply through Fundisa</span></div>
+    <div class="hero-row">
+      <div class="hero-copy">
+        <p class="eyebrow">Bursary alerts for South African students</p>
+        <h1>Find the <em>bursary</em> that's already looking for you.</h1>
+        <p class="lede">Fundisa tracks open bursaries across every field of study and tells you, in plain language, which ones actually fit you — no more scrolling through 40 tabs the week before a deadline.</p>
+        <div class="stat-row">
+          <div class="stat"><b id="statCount">—</b><span>open bursaries tracked</span></div>
+          <div class="stat"><b id="statFields">—</b><span>fields of study covered</span></div>
+          <div class="stat"><b>R0</b><span>cost to apply through Fundisa</span></div>
+        </div>
+      </div>
+      <div class="hero-logo reveal">
+        <img src="assets/fundisa-logo.jpg" alt="Fundisa — Your future, funded" width="619" height="506" loading="eager">
+      </div>
     </div>
   </header>
 
   <section id="browse" class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div>
         <p class="eyebrow">The catalogue</p>
         <h2>Open bursaries, by field</h2>
       </div>
       <p>Real, currently-open South African bursaries, served live from the Fundisa database. Filter by field or search by name.</p>
     </div>
+    <div class="chart-panel reveal" id="chartPanel" style="display:none;">
+      <div class="chart-panel-head">
+        <h3>Bursaries by field of study</h3>
+        <span id="chartTotalLabel"></span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="fieldChart"></canvas></div>
+    </div>
     <input class="search-input" id="searchInput" type="text" placeholder="Search by bursary or provider name…" aria-label="Search bursaries">
     <div class="filter-row" id="filterRow"></div>
-    <div class="grid" id="bursaryGrid"><p style="color:var(--text-muted); font-size:14px;">Loading bursaries…</p></div>
+    <div class="grid" id="bursaryGrid"></div>
   </section>
 
   <section class="quote-strip">
@@ -255,8 +364,8 @@
   </section>
 
   <section id="assistant" class="wrap">
-    <div class="assistant">
-      <div class="section-head">
+    <div class="assistant reveal">
+      <div class="section-head reveal">
         <div>
           <p class="eyebrow">AI bursary matching</p>
           <h2>Tell it your field. It'll find your fit.</h2>
@@ -274,8 +383,48 @@
     </div>
   </section>
 
+  <section id="fundraisers" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Community-backed funding</p>
+        <h2>Student fundraisers</h2>
+      </div>
+      <p>For the gaps bursaries don't cover — registration deposits, a specific textbook, one term's rent. Fundisa doesn't process the donations itself; every campaign links straight to the student's real, verified fundraising page.</p>
+    </div>
+    <p class="fundraiser-note">Every campaign here is a real South African student, added and checked by the Fundisa team before it's listed — not a payment collected by Fundisa directly.</p>
+    <div class="grid" id="campaignGrid"></div>
+  </section>
+
+  <section id="letter-helper" class="wrap">
+    <div class="assistant reveal">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">AI letter assistant</p>
+          <h2>Draft your motivational letter.</h2>
+        </div>
+        <p>Tell it about yourself — your field, your story, what makes you a strong candidate — and it'll draft a first version in your own voice. You personalize and verify it from there.</p>
+      </div>
+      <form class="letter-form" id="letterForm">
+        <div class="letter-row">
+          <input type="text" id="letterName" placeholder="Your full name" aria-label="Your name">
+          <input type="text" id="letterField" placeholder="Field of study (optional)" aria-label="Field of study">
+        </div>
+        <input type="text" id="letterTarget" placeholder="Bursary or programme you're applying to (optional)" aria-label="Target bursary">
+        <textarea id="letterPoints" placeholder="Tell it about yourself: achievements, circumstances, what you're studying and why, anything you want the letter to mention…" aria-label="Your story and achievements"></textarea>
+        <button type="submit" id="letterSubmit">Draft my letter</button>
+      </form>
+      <p class="ai-hint">This is a first draft based only on what you tell it, nothing invented — read it over, personalize it, and check every detail before you submit it anywhere.</p>
+      <p class="ai-error" id="letterError"></p>
+      <div class="ai-loading" id="letterLoading"><span class="spinner" aria-hidden="true"></span><span>Drafting your letter…</span></div>
+      <div class="letter-output" id="letterOutput">
+        <div class="letter-text" id="letterText"></div>
+        <button type="button" class="letter-copy-btn" id="letterCopy">Copy letter</button>
+      </div>
+    </div>
+  </section>
+
   <section class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div>
         <p class="eyebrow">Never miss a closing date</p>
         <h2>Get notified when new bursaries open</h2>
@@ -289,13 +438,35 @@
     <p class="notify-msg" id="notifyMsg"></p>
   </section>
 
+  <section id="mission" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Why Fundisa exists</p>
+        <h2>Talent shouldn't lose to a closing date.</h2>
+      </div>
+    </div>
+    <p style="font-size:16px; color:var(--text-muted); max-width:640px; line-height:1.75;">
+      Every year, capable students miss out on funding they'd have qualified for — not because they weren't good enough, but because they never found the right bursary in time, didn't know how to put their story into a motivational letter, or hit a cost too specific for any bursary to cover. Fundisa exists to close that gap: real, current bursaries in one place, AI help with the parts that intimidate people most, and a way for community to step in when the system moves too slowly to help.
+    </p>
+  </section>
+
   <section id="about" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Leadership</p>
+        <h2>Meet Our Founder &amp; CEO</h2>
+      </div>
+    </div>
     <div class="about">
-      <div class="about-note">
-        <p class="eyebrow">Who built this</p>
-        <h3>A note from the creator</h3>
-        <p>Fundisa was designed and built by Nqobile, an aspiring software engineer. It started as a way to fix a problem a lot of students share: bursaries exist, but finding the right one, before the deadline passes, is harder than it should be.</p>
-        <p class="signature">— Nqobile</p>
+      <div class="about-note reveal" style="max-width:680px;">
+        <p class="founder-name">Nqobile Ngubani</p>
+        <p class="founder-title">Founder &amp; Chief Executive Officer, Fundisa</p>
+        <p>Driven by a passion for technology, systems design, and educational empowerment, Nqobile Ngubani founded Fundisa to solve one of the most critical challenges facing students today: accessible financial aid and educational resources.</p>
+        <p>Currently pursuing a Bachelor of Science in Information Technology, Nqobile combines technical proficiency in software architecture and database design with a deep personal commitment to community upliftment. Having witnessed firsthand the financial hurdles that talented students encounter—from registration deposits to textbook costs—Nqobile engineered Fundisa to bridge the gap between ambitious learners, funding opportunities, and community support.</p>
+        <blockquote class="founder-quote">
+          "Education should be determined by talent and determination, not financial constraint. Fundisa was built to ensure every student has the tools, funding, and community backing needed to reach graduation."
+          <cite>— Nqobile Ngubani</cite>
+        </blockquote>
       </div>
     </div>
   </section>
@@ -308,7 +479,7 @@
 <script>
 // Point this at wherever the backend is running.
 // Local dev default matches backend/server.js's default port.
-const API_BASE = window.FUNDISA_API_BASE || 'http://localhost:3001';
+const API_BASE = window.FUNDISA_API_BASE || 'https://fundisa-backend.onrender.com';
 
 const QUOTES = [
   { text:'Education is the most powerful weapon which you can use to change the world.', cite:'Nelson Mandela' },
@@ -363,6 +534,21 @@ function initFilters(){
   });
 }
 
+function skeletonCardHTML(){
+  return `
+    <div class="skel-card">
+      <span class="skel skel-line w-40" style="height:9px;"></span>
+      <span class="skel skel-line tall w-80"></span>
+      <span class="skel skel-line w-100"></span>
+      <span class="skel skel-line w-60" style="margin-bottom:0;"></span>
+    </div>`;
+}
+
+function renderSkeletons(gridId, count){
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = Array.from({ length: count }).map(skeletonCardHTML).join('');
+}
+
 function bcardHTML(b, matchPct){
   const isUrgent = b.deadline.toLowerCase().includes('closes') || b.deadline.toLowerCase().includes('30 september');
   const deadlineClass = isUrgent ? 'urgent' : 'open';
@@ -401,6 +587,111 @@ function renderGrid(){
   requestAnimationFrame(() => {
     grid.querySelectorAll('.bcard').forEach((el, i) => {
       setTimeout(() => el.classList.add('show'), i * 40);
+    });
+  });
+}
+
+function formatRand(n){
+  return 'R' + Number(n).toLocaleString('en-ZA');
+}
+
+function campaignCardHTML(c){
+  const pct = c.goal_amount > 0 ? Math.min(100, Math.round((c.raised_amount / c.goal_amount) * 100)) : 0;
+  const statusLabel = c.status === 'active' ? 'Active' : c.status === 'closed' ? 'Fully funded / closed' : c.status;
+  const deadlineClass = c.status === 'active' ? 'open' : 'urgent';
+  return `
+    <div class="bcard show">
+      <div class="bcard-top">
+        <p class="bcard-provider">${escapeHtmlIndex(c.student_name)}${c.field ? ' · ' + escapeHtmlIndex(c.field) : ''}</p>
+        <h3 class="bcard-name">${escapeHtmlIndex(c.title)}</h3>
+        <p class="bcard-desc">${escapeHtmlIndex(c.story)}</p>
+        <div class="progress-track"><div class="progress-fill" data-target-pct="${pct}" style="width:0%"></div></div>
+        <div class="campaign-meta"><span><b>${formatRand(c.raised_amount)}</b> raised</span><span>Goal: ${formatRand(c.goal_amount)}</span></div>
+      </div>
+      <div class="perforation" aria-hidden="true"></div>
+      <div class="bcard-bottom">
+        <span class="deadline ${deadlineClass}">${statusLabel}</span>
+        <a class="bcard-link" href="${c.external_url}" target="_blank" rel="noopener">Support this campaign ↗</a>
+      </div>
+    </div>`;
+}
+
+function escapeHtmlIndex(str){
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+async function loadCampaigns(){
+  const grid = document.getElementById('campaignGrid');
+  try {
+    const data = await api('/api/campaigns');
+    const campaigns = data.campaigns || [];
+    if(campaigns.length === 0){
+      grid.innerHTML = `<p style="color:var(--text-muted); font-size:14px;">No active fundraisers right now — check back soon, or if you're a student who needs one, get in touch with the Fundisa team.</p>`;
+      return;
+    }
+    grid.innerHTML = campaigns.map(campaignCardHTML).join('');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        grid.querySelectorAll('.progress-fill').forEach(el => {
+          el.style.width = el.dataset.targetPct + '%';
+        });
+      });
+    });
+  } catch (err) {
+    grid.innerHTML = `<p style="color:var(--coral-dark); font-size:14px;">Couldn't load fundraisers right now — try refreshing in a moment.</p>`;
+  }
+}
+
+async function handleLetterSubmit(e){
+  e.preventDefault();
+  const name = document.getElementById('letterName').value.trim();
+  const fieldOfStudy = document.getElementById('letterField').value.trim();
+  const targetBursary = document.getElementById('letterTarget').value.trim();
+  const points = document.getElementById('letterPoints').value.trim();
+  const errorEl = document.getElementById('letterError');
+  const loadingEl = document.getElementById('letterLoading');
+  const outputEl = document.getElementById('letterOutput');
+  const submitBtn = document.getElementById('letterSubmit');
+
+  errorEl.style.display = 'none';
+  outputEl.style.display = 'none';
+
+  if(!name || !points){
+    errorEl.textContent = 'Add your name and at least a few things about yourself first.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  loadingEl.style.display = 'flex';
+  submitBtn.disabled = true;
+
+  try {
+    const data = await api('/api/letter-assistant', {
+      method: 'POST',
+      body: JSON.stringify({ name, fieldOfStudy, targetBursary, points })
+    });
+    document.getElementById('letterText').textContent = data.letter || '';
+    outputEl.style.display = 'block';
+  } catch (err) {
+    errorEl.textContent = err.message || "Couldn't draft that just now — please try again.";
+    errorEl.style.display = 'block';
+  } finally {
+    loadingEl.style.display = 'none';
+    submitBtn.disabled = false;
+  }
+}
+
+function initLetterAssistant(){
+  document.getElementById('letterForm').addEventListener('submit', handleLetterSubmit);
+  document.getElementById('letterCopy').addEventListener('click', () => {
+    const text = document.getElementById('letterText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('letterCopy');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = original; }, 1800);
     });
   });
 }
@@ -503,13 +794,87 @@ async function handleAISubmit(e){
   }
 }
 
+function animateCountUp(el, target, duration = 900){
+  if (target === 0) { el.textContent = '0'; return; }
+  const start = performance.now();
+  function tick(now){
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
+}
+
+function initScrollReveal(){
+  const targets = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(el => el.classList.add('visible'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(el => observer.observe(el));
+}
+
+let fieldChartInstance = null;
+function renderFieldChart(){
+  const panel = document.getElementById('chartPanel');
+  const canvas = document.getElementById('fieldChart');
+  if (typeof Chart === 'undefined' || !canvas) return; // Chart.js failed to load — chart is a nice-to-have, page still works without it
+
+  const counts = {};
+  BURSARIES.forEach(b => {
+    b.fields.forEach(f => { counts[f] = (counts[f] || 0) + 1; });
+  });
+  const labels = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  if (labels.length === 0) return;
+
+  panel.style.display = 'block';
+  document.getElementById('chartTotalLabel').textContent = `${BURSARIES.length} listed`;
+
+  if (fieldChartInstance) fieldChartInstance.destroy();
+  fieldChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: labels.map(l => counts[l]),
+        backgroundColor: '#827056',
+        borderRadius: 4,
+        maxBarThickness: 34
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#264C47' } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'IBM Plex Mono' } }, grid: { color: '#F1F0EA' } },
+        x: { ticks: { font: { family: 'Work Sans', size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
 async function boot(){
   document.getElementById('searchInput').addEventListener('input', (e) => {
     searchTerm = e.target.value;
     renderGrid();
   });
   document.getElementById('aiForm').addEventListener('submit', handleAISubmit);
+  initLetterAssistant();
   initQuotes();
+
+  renderSkeletons('bursaryGrid', 6);
+  renderSkeletons('campaignGrid', 3);
 
   try {
     const [bursariesRes, fieldsRes] = await Promise.all([
@@ -520,18 +885,24 @@ async function boot(){
     ALL_FIELDS = fieldsRes.fields;
     setApiStatus(true);
 
-    document.getElementById('statCount').textContent = BURSARIES.filter(b => b.status === 'open').length;
-    document.getElementById('statFields').textContent = ALL_FIELDS.length - 1;
+    animateCountUp(document.getElementById('statCount'), BURSARIES.filter(b => b.status === 'open').length);
+    animateCountUp(document.getElementById('statFields'), ALL_FIELDS.length - 1);
 
     initTicker();
     initFilters();
     renderGrid();
     initNotify();
+    loadCampaigns();
+    renderFieldChart();
   } catch (err) {
     setApiStatus(false);
     document.getElementById('bursaryGrid').innerHTML =
       `<p style="color:var(--coral-dark); font-size:14px;">Can't reach the Fundisa backend at ${API_BASE}. Make sure <code>node server.js</code> is running, then refresh.</p>`;
+    document.getElementById('campaignGrid').innerHTML =
+      `<p style="color:var(--coral-dark); font-size:14px;">Can't reach the Fundisa backend right now.</p>`;
   }
+
+  initScrollReveal();
 }
 
 boot();
