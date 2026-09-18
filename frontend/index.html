@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#264C47">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Fundisa | Avoid missing the funding you deserve</title>
+<meta name="description" content="Fundisa helps South African students find relevant funding, stay ahead of deadlines, and avoid missing bursary opportunities.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://your-site.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fundisa | Avoid missing the funding you deserve">
+<meta property="og:description" content="Find relevant funding, stay ahead of deadlines, and avoid missing bursary opportunities with Fundisa.">
+<meta property="og:url" content="https://your-site.onrender.com/">
+<meta property="og:image" content="https://your-site.onrender.com/assets/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fundisa | Avoid missing the funding you deserve">
+<meta name="twitter:description" content="Find relevant funding, stay ahead of deadlines, and avoid missing bursary opportunities with Fundisa.">
+<meta name="twitter:image" content="https://your-site.onrender.com/assets/og-image.jpg">
+
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#264C47">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fundisa-backend.onrender.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Supabase JS Client for optional live database connection -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --ink:#264C47;
+    --ink-soft:#51706C;
+    --paper:#FBFAF7;
+    --paper-dim:#F1F0EA;
+    --card:#FFFFFF;
+    --gold:#AE9572;
+    --gold-dark:#655642;
+    --gold-cta:#827056;
+    --green:#1F7A5C;
+    --green-dark:#0F4A37;
+    --coral:#C7501F;
+    --coral-dark:#7A3010;
+    --text:#1B1F2A;
+    --text-muted:#5B6472;
+    --border:#DEDBD1;
+    --radius:6px;
+    --shadow: 0 1px 2px rgba(20,33,61,0.06), 0 4px 14px rgba(20,33,61,0.06);
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  /* SCROLL REVEAL */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  /* SKELETON LOADERS */
+  .skel{
+    background:linear-gradient(100deg, var(--paper-dim) 30%, #EAE6D9 45%, var(--paper-dim) 60%);
+    background-size:300% 100%;
+    animation:skel-shimmer 1.5s ease-in-out infinite;
+    border-radius:4px;
+    display:block;
+  }
+  @keyframes skel-shimmer{ 0%{ background-position:120% 0; } 100%{ background-position:-20% 0; } }
+  .skel-card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
+  .skel-line{ height:11px; margin-bottom:10px; }
+  .skel-line.w-40{ width:40%; } .skel-line.w-60{ width:60%; } .skel-line.w-80{ width:80%; } .skel-line.w-100{ width:100%; }
+  .skel-line.tall{ height:18px; margin-bottom:14px; }
+
+  /* MICRO-INTERACTIONS */
+  .navlinks a{ position:relative; }
+  .navlinks a::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:var(--gold-cta);
+    transition:width .25s ease;
+  }
+  .navlinks a:hover::after{ width:100%; }
+  .chip{ transition:transform .15s ease, border-color .15s ease, background .15s ease; }
+  .chip:hover{ transform:translateY(-1px); }
+  .chip:active{ transform:translateY(0) scale(0.97); }
+  .bcard{ transition:opacity .5s ease, transform .3s ease, box-shadow .3s ease; }
+  .bcard:hover{ transform:translateY(-3px); box-shadow:0 4px 10px rgba(38,76,71,0.1), 0 10px 26px rgba(38,76,71,0.12); }
+  button{ transition:transform .12s ease, background .15s ease, box-shadow .15s ease; }
+  button:active:not(:disabled){ transform:scale(0.96); }
+  .bcard-link{ transition:color .15s ease; }
+  .progress-fill{ transition:width 1s cubic-bezier(.22,.9,.34,1); }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    color:var(--ink);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  a{ color:inherit; }
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+  }
+  button, input, select{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,250,247,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border);
+  }
+  .navrow{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:'Work Sans',sans-serif; font-weight:700; font-size:18px; letter-spacing:0.02em; text-transform:uppercase; color:var(--ink); text-decoration:none; }
+  .brand-mark{ width:26px; height:26px; border-radius:50%; background:var(--gold-cta); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500; flex-shrink:0; }
+  .brand-logo{ width:118px; height:auto; max-height:48px; object-fit:contain; display:block; border-radius:5px; }
+  .brand-name{ display:none; }
+  .navlinks{ display:flex; gap:26px; font-size:14px; }
+  .navlinks a{ text-decoration:none; color:var(--ink-soft); }
+  .navlinks a:hover{ color:var(--gold-dark); }
+  .status-pill{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:4px 10px; border-radius:999px; }
+  .status-pill.connected{ background:rgba(31,122,92,0.12); color:var(--green-dark); }
+  .status-pill.offline{ background:rgba(199,80,31,0.12); color:var(--coral-dark); }
+  @media (max-width:640px){ .navlinks{ display:none; } }
+
+  .ticker-bar{ background:var(--ink); color:#EDE7D6; overflow:hidden; }
+  .ticker-track{ display:flex; align-items:center; gap:48px; padding:8px 0; white-space:nowrap; animation:scroll 32s linear infinite; width:max-content; }
+  @keyframes scroll{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .ticker-item{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; display:flex; align-items:center; gap:8px; }
+  .ticker-dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+
+  .hero{ padding:76px 0 56px; position:relative; }
+  .hero-row{ display:flex; align-items:center; gap:48px; }
+  .hero-copy{ flex:1.3; min-width:0; }
+  .hero h1{ font-size:clamp(34px,5.6vw,58px); line-height:1.05; max-width:820px; }
+  .hero h1 em{ font-style:normal; color:var(--gold-dark); background:linear-gradient(to top, rgba(174,149,114,0.32) 38%, transparent 38%); padding:0 2px; }
+  .hero p.lede{ font-size:18px; color:var(--text-muted); max-width:540px; margin-top:18px; }
+  .stat-row{ display:flex; gap:36px; margin-top:38px; flex-wrap:wrap; }
+  .stat b{ font-family:'Fraunces',serif; font-size:28px; color:var(--ink); display:block; font-weight:600; }
+  .stat span{ font-size:13px; color:var(--text-muted); }
+  .hero-logo{ flex:1; min-width:240px; display:flex; justify-content:center; }
+  .hero-logo img{
+    width:100%; max-width:340px; border-radius:10px; transform:rotate(-1.5deg);
+    box-shadow:0 8px 28px rgba(38,76,71,0.18), 0 2px 6px rgba(38,76,71,0.1);
+    border:1px solid var(--border);
+  }
+  @media (max-width:760px){
+    .hero-row{ flex-direction:column-reverse; gap:32px; }
+    .hero-logo img{ max-width:260px; transform:rotate(-1deg); }
+  }
+
+  section{ padding:64px 0; }
+  .section-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:30px; flex-wrap:wrap; }
+  .section-head h2{ font-size:clamp(24px,3.4vw,32px); margin-top:6px; }
+  .section-head p{ color:var(--text-muted); max-width:460px; font-size:15px; }
+
+  .filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px; }
+  .chart-panel{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px 22px; margin-bottom:26px;
+  }
+  .chart-panel-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
+  .chart-panel-head h3{ font-family:'Fraunces',serif; font-size:16px; font-weight:600; color:var(--ink); }
+  .chart-panel-head span{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--text-muted); }
+  .chart-canvas-wrap{ height:180px; position:relative; }
+  .chip{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px;
+    padding:7px 13px; border-radius:999px; border:1px solid var(--border);
+    background:var(--card); cursor:pointer; color:var(--ink-soft);
+    transition:all .15s ease;
+  }
+  .chip:hover{ border-color:var(--gold); }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:#F4EFE2; }
+  .search-input{
+    width:100%; max-width:320px; padding:9px 13px; border-radius:999px;
+    border:1px solid var(--border); background:var(--card); font-size:14px; margin-bottom:18px;
+  }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
+  .bcard{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden;
+    opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;
+  }
+  .bcard.show{ opacity:1; transform:translateY(0); }
+  .bcard-top{ padding:18px 18px 16px; }
+  .bcard-provider{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); }
+  .bcard-name{ font-family:'Fraunces',serif; font-weight:600; font-size:19px; color:var(--ink); margin-top:4px; line-height:1.25; }
+  .bcard-desc{ font-size:13.5px; color:var(--text-muted); margin-top:8px; }
+  .bcard-tags{ display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+  .tag{ font-size:11px; font-family:'IBM Plex Mono',monospace; padding:3px 8px; border-radius:4px; background:var(--paper-dim); color:var(--ink-soft); }
+  .perforation{ position:relative; height:1px; border-top:1.5px dashed var(--border); margin:0 18px; }
+  .perforation::before, .perforation::after{ content:''; position:absolute; top:-6px; width:12px; height:12px; border-radius:50%; background:var(--paper); }
+  .perforation::before{ left:-24px; } .perforation::after{ right:-24px; }
+  .bcard-bottom{ padding:14px 18px 18px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .deadline{ font-family:'IBM Plex Mono',monospace; font-size:12px; }
+  .deadline.urgent{ color:var(--coral-dark); }
+  .deadline.open{ color:var(--green-dark); }
+  .bcard-link{ font-size:13px; font-weight:500; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--gold); white-space:nowrap; }
+  .bcard-link:hover{ color:var(--gold-dark); }
+  .match-seal{
+    position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:50%;
+    background:var(--gold-cta); color:#fff; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; font-family:'IBM Plex Mono',monospace; line-height:1; box-shadow:var(--shadow);
+  }
+  .match-seal b{ font-size:14px; } .match-seal span{ font-size:8px; }
+
+  /* FUNDING RADAR / STUDENT CONTROL CENTER */
+  .radar-shell{
+    background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow);
+    padding:26px;
+  }
+  .radar-grid{ display:grid; grid-template-columns:1.05fr 1.4fr; gap:18px; align-items:start; }
+  .radar-card{ background:var(--paper); border:1px solid var(--border); border-radius:10px; padding:20px; }
+  .radar-card h3{ font-size:19px; }
+  .radar-card p{ color:var(--text-muted); font-size:13.5px; }
+  .radar-form{ display:grid; gap:10px; margin-top:14px; }
+  .radar-form label{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; }
+  .radar-form select, .radar-form input{ width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); font-size:14px; }
+  .radar-form button{ padding:11px 18px; border-radius:999px; border:1px solid var(--ink); background:var(--ink); color:#F4EFE2; font-weight:600; cursor:pointer; font-size:13.5px; }
+  .radar-score-row{ display:flex; justify-content:space-between; align-items:end; gap:12px; margin-top:14px; }
+  .radar-score{ font-family:'Fraunces',serif; font-size:42px; line-height:1; color:var(--ink); }
+  .radar-score span{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-muted); display:block; margin-top:4px; }
+  .radar-meter{ height:8px; background:var(--paper-dim); border-radius:999px; overflow:hidden; margin:12px 0 16px; }
+  .radar-meter-fill{ width:0; height:100%; border-radius:999px; background:var(--gold-cta); transition:width .7s ease; }
+  .radar-list{ display:grid; gap:10px; margin-top:12px; }
+  .radar-item{ background:var(--card); border:1px solid var(--border); border-radius:9px; padding:13px 14px; display:flex; justify-content:space-between; gap:12px; align-items:center; }
+  .radar-item strong{ font-family:'Fraunces',serif; color:var(--ink); font-size:16px; display:block; }
+  .radar-item small{ color:var(--text-muted); font-size:11.5px; }
+  .radar-badge{ font-family:'IBM Plex Mono',monospace; font-size:10px; padding:5px 8px; border-radius:999px; background:rgba(31,122,92,.12); color:var(--green-dark); white-space:nowrap; }
+  .radar-empty{ color:var(--text-muted); font-size:13px; padding:10px 0 4px; }
+  .mini-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .mini-stat{ background:var(--card); border:1px solid var(--border); border-radius:9px; padding:12px 13px; }
+  .mini-stat b{ display:block; font-family:'Fraunces',serif; color:var(--ink); font-size:23px; }
+  .mini-stat span{ font-size:11px; color:var(--text-muted); }
+  .gap-form{ display:grid; gap:9px; margin-top:12px; }
+  .gap-form input{ width:100%; padding:10px 12px; border-radius:9px; border:1px solid var(--border); background:var(--card); }
+  .gap-result{ margin-top:12px; padding:12px 13px; border-radius:9px; background:var(--paper-dim); color:var(--ink); }
+  .gap-result b{ font-family:'Fraunces',serif; font-size:21px; }
+  .gap-note{ font-size:11.5px !important; margin-top:6px !important; }
+  .plain-language{ margin-top:10px; border-top:1px solid var(--border); padding-top:10px; }
+  .plain-language summary{ cursor:pointer; color:var(--ink); font-size:12.5px; font-weight:600; }
+  .plain-language p{ margin:7px 0 0; font-size:12px; }
+  .rescue-list{ display:grid; gap:9px; margin-top:12px; }
+  .rescue-item{ background:var(--card); border:1px solid var(--border); border-radius:9px; padding:12px 13px; }
+  .rescue-item-top{ display:flex; justify-content:space-between; gap:10px; align-items:start; }
+  .rescue-item strong{ font-family:'Fraunces',serif; color:var(--ink); font-size:15px; }
+  .rescue-item small{ color:var(--text-muted); font-size:11px; display:block; margin-top:3px; }
+  .rescue-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
+  .rescue-actions a, .rescue-actions button{ font-size:11.5px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:var(--paper); color:var(--ink); text-decoration:none; cursor:pointer; }
+  .rescue-actions a.primary, .rescue-actions button.primary{ background:var(--ink); color:#F4EFE2; border-color:var(--ink); }
+  .desk-grid{ display:grid; gap:10px; }
+  .desk-row{ display:flex; justify-content:space-between; gap:12px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:9px; padding:12px 13px; }
+  .desk-row strong{ font-family:'Fraunces',serif; color:var(--ink); font-size:15px; }
+  .desk-row small{ display:block; color:var(--text-muted); font-size:11px; margin-top:2px; }
+  .desk-row select{ padding:7px 9px; border:1px solid var(--border); border-radius:999px; background:var(--paper); font-size:11px; color:var(--ink); }
+  .brand-promise{ margin-top:18px; text-align:center; padding:18px 10px 8px; }
+  .brand-promise p{ margin:0; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; color:var(--gold-dark); }
+  .brand-promise strong{ display:block; margin-top:6px; font-family:'Fraunces',serif; font-size:clamp(26px,4vw,38px); color:var(--ink); letter-spacing:.02em; }
+  @media (max-width:820px){ .radar-grid{ grid-template-columns:1fr; } }
+  @media (max-width:520px){ .mini-grid{ grid-template-columns:1fr; } .radar-shell{ padding:18px; } }
+
+  /* STUDENT STORIES SECTION STYLES */
+  .story-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .story-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(38,76,71,0.1), 0 10px 26px rgba(38,76,71,0.12);
+  }
+  .story-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .story-author { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); }
+  .story-meta { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--gold-dark); margin-bottom: 12px; }
+  .story-text { font-size: 14px; color: var(--text-muted); line-height: 1.6; font-style: italic; }
+  .story-badge { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 4px 8px; border-radius: 4px; background: rgba(31,122,92,0.12); color: var(--green-dark); display: inline-block; margin-top: 14px; }
+
+  .assistant{ background:var(--ink); border-radius:14px; padding:38px 32px; color:#EDE7D6; }
+  .assistant .section-head p, .assistant .section-head .eyebrow{ color:#B9C0D6; }
+  .assistant .section-head h2{ color:#FBFAF7; }
+  .ai-form{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+  .ai-form input{
+    flex:1; min-width:220px; padding:13px 16px; border-radius:999px; border:1px solid #3C4B70;
+    background:#1E2C4C; color:#F4EFE2; font-size:15px;
+  }
+  .ai-form input::placeholder{ color:#7D89A8; }
+  .ai-form button{
+    padding:13px 24px; border-radius:999px; border:none; background:var(--gold-cta); color:#fff;
+    font-weight:600; cursor:pointer; font-size:14px; transition:background .15s ease;
+  }
+  .ai-form button:hover{ background:#6E5D46; }
+  .ai-form button:disabled{ opacity:0.6; cursor:default; }
+  .ai-hint{ font-size:12.5px; color:#8792AC; margin-top:10px; }
+  .ai-error{ font-size:13.5px; color:#F3B199; margin-top:14px; display:none; }
+
+  /* CAMPAIGN PROGRESS */
+  .progress-track{ height:8px; border-radius:999px; background:var(--paper-dim); overflow:hidden; margin-top:12px; }
+  .progress-fill{ height:100%; background:var(--gold-cta); border-radius:999px; }
+  .campaign-meta{ display:flex; justify-content:space-between; font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--text-muted); margin-top:6px; }
+  .campaign-meta b{ color:var(--ink); }
+
+  /* LETTER FORM */
+  .letter-form{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .letter-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .letter-row input{ flex:1; min-width:200px; }
+  .letter-form input, .letter-form textarea{
+    padding:13px 16px; border-radius:14px; border:1px solid #3C4B70; background:#1E2C4C; color:#F4EFE2;
+    font-size:15px; font-family:inherit;
+  }
+  .letter-form input::placeholder, .letter-form textarea::placeholder{ color:#7D89A8; }
+  .letter-form textarea{ min-height:110px; resize:vertical; }
+  .letter-form button{
+    align-self:flex-start; padding:13px 24px; border-radius:999px; border:none; background:var(--gold-cta);
+    color:#fff; font-weight:600; cursor:pointer; font-size:14px; transition:background .15s ease;
+  }
+  .letter-form button:hover{ background:#6E5D46; }
+  .letter-form button:disabled{ opacity:0.6; cursor:default; }
+  .letter-output{ margin-top:22px; background:#1E2C4C; border-radius:10px; padding:20px 22px; display:none; }
+  .letter-text{ font-size:14.5px; color:#E4E0D3; white-space:pre-wrap; line-height:1.7; }
+  .letter-copy-btn{ padding:8px 16px; border-radius:999px; border:1px solid #3C4B70; background:transparent; color:#F4EFE2; cursor:pointer; font-size:12.5px; }
+  .letter-copy-btn:hover{ border-color:var(--gold); }
+
+  /* FUNDRAISER NOTE */
+  .fundraiser-note{ font-size:13.5px; color:var(--text-muted); margin-bottom:22px; max-width:560px; }
+
+  .about-note{
+    flex:1; min-width:280px; background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:26px 28px; position:relative; box-shadow:var(--shadow);
+  }
+  .about-note::before{ content:''; position:absolute; top:-8px; left:28px; width:52px; height:16px; background:rgba(174,149,114,0.4); transform:rotate(-2deg); }
+  .about-note h3{ font-size:20px; }
+  .about-note p{ font-size:14.5px; color:var(--text-muted); margin-top:10px; }
+  .founder-name{ font-family:'Fraunces',serif; font-weight:600; font-size:22px; color:var(--ink); margin-top:8px; }
+  .founder-title{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--gold-dark); text-transform:uppercase; letter-spacing:0.04em; margin-top:2px; }
+  .founder-quote{ margin:22px 0 0; padding-left:18px; border-left:3px solid var(--gold); font-family:'Fraunces',serif; font-style:italic; font-size:16.5px; color:var(--ink); line-height:1.5; }
+  .founder-quote cite{ display:block; font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-muted); margin-top:10px; }
+  .ai-results{ margin-top:26px; display:grid; gap:14px; }
+  .ai-result{ background:#1E2C4C; border-radius:10px; padding:16px 18px; position:relative; }
+  .ai-result-name{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:#FBFAF7; padding-right:60px; }
+  .ai-result-why{ font-size:13.5px; color:#C6CCDE; margin-top:6px; }
+  .ai-loading{ display:none; align-items:center; gap:10px; margin-top:20px; font-size:13.5px; color:#B9C0D6; }
+  .spinner{ width:14px; height:14px; border-radius:50%; border:2px solid #3C4B70; border-top-color:var(--gold); animation:spin .7s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .quote-strip{
+    background:var(--paper-dim); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    padding:34px 0; text-align:center;
+  }
+  .quote-strip blockquote{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(18px,2.6vw,24px);
+    color:var(--ink); max-width:680px; margin:0 auto; transition:opacity .4s ease;
+  }
+  .quote-strip cite{ display:block; font-style:normal; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-muted); margin-top:12px; }
+
+  .notify-box{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px; }
+  .notify-box input{ padding:11px 15px; border-radius:999px; border:1px solid var(--border); font-size:14px; min-width:230px; }
+  .notify-box select{ padding:11px 15px; border-radius:999px; border:1px solid var(--border); font-size:14px; }
+  .notify-box button{ padding:11px 20px; border-radius:999px; border:1px solid var(--ink); background:var(--ink); color:#F4EFE2; font-weight:500; cursor:pointer; font-size:13.5px; }
+  .notify-box button:disabled{ opacity:0.6; cursor:default; }
+  .notify-msg{ font-size:13px; margin-top:10px; display:none; }
+
+  .about{ display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap; }
+  .signature{ font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--ink); margin-top:18px; }
+
+  /* FUNDISA CHATBOT */
+  .chatbot-launcher{
+    position:fixed; right:22px; bottom:22px; z-index:80; width:62px; height:62px; border-radius:50%;
+    border:1px solid var(--ink); background:var(--ink); color:#F4EFE2; box-shadow:0 12px 30px rgba(38,76,71,.25);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:'IBM Plex Mono',monospace;
+    font-size:11px; text-transform:uppercase; letter-spacing:.04em;
+  }
+  .chatbot-launcher span{ display:block; line-height:1.1; text-align:center; }
+  .chatbot-panel{
+    position:fixed; right:22px; bottom:96px; z-index:79; width:min(390px, calc(100vw - 28px)); height:min(620px, calc(100vh - 130px));
+    background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:0 20px 50px rgba(25,43,40,.22);
+    overflow:hidden; display:none; grid-template-rows:auto 1fr auto;
+  }
+  .chatbot-panel.open{ display:grid; }
+  .chatbot-head{ background:var(--ink); color:#F4EFE2; padding:17px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .chatbot-head h3{ color:#FBFAF7; font-family:'Fraunces',serif; font-size:20px; margin:0; }
+  .chatbot-head p{ color:#B9C0D6; font-size:11.5px; margin:3px 0 0; }
+  .chatbot-close{ background:transparent; border:0; color:#F4EFE2; font-size:22px; cursor:pointer; line-height:1; }
+  .chatbot-messages{ padding:16px; overflow-y:auto; background:var(--paper); display:flex; flex-direction:column; gap:10px; }
+  .chat-msg{ max-width:88%; padding:11px 13px; border-radius:13px; font-size:13.5px; line-height:1.5; white-space:pre-wrap; }
+  .chat-msg.bot{ align-self:flex-start; background:var(--paper-dim); border:1px solid var(--border); color:var(--ink-soft); border-bottom-left-radius:5px; }
+  .chat-msg.user{ align-self:flex-end; background:var(--ink); color:#F4EFE2; border-bottom-right-radius:5px; }
+  .chat-sources{ margin-top:7px; font-size:11px; color:var(--text-muted); }
+  .chat-sources a{ color:var(--green-dark); text-decoration:underline; }
+  .chatbot-form{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--border); background:var(--card); }
+  .chatbot-form input{ flex:1; min-width:0; padding:12px 13px; border-radius:999px; border:1px solid var(--border); font:inherit; }
+  .chatbot-form button{ padding:11px 15px; border-radius:999px; border:1px solid var(--ink); background:var(--ink); color:#F4EFE2; cursor:pointer; font-weight:600; }
+  .chatbot-form button:disabled{ opacity:.55; cursor:default; }
+  .chatbot-note{ padding:0 14px 10px; background:var(--card); color:var(--text-muted); font-size:10.5px; }
+
+  footer{ padding:34px 0 50px; text-align:center; }
+  footer p{ font-size:12.5px; color:var(--text-muted); font-family:'IBM Plex Mono',monospace; }
+
+  .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+  /* SAVE / BOOKMARK */
+  .save-btn{
+    position:absolute; top:14px; left:14px; width:32px; height:32px; border-radius:50%;
+    background:rgba(255,255,255,0.9); border:1px solid var(--border); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; z-index:2; transition:transform .15s ease, background .15s ease;
+  }
+  .save-btn:hover{ transform:scale(1.08); }
+  .save-btn svg{ width:15px; height:15px; stroke:var(--ink); fill:none; stroke-width:2; }
+  .save-btn.saved svg{ fill:var(--gold-cta); stroke:var(--gold-cta); }
+  .saved-toggle-row{ display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .saved-toggle{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:7px 13px; border-radius:999px;
+    border:1px solid var(--border); background:var(--card); cursor:pointer; color:var(--ink-soft);
+  }
+  .saved-toggle.active{ background:var(--ink); border-color:var(--ink); color:#F4EFE2; }
+
+  /* COUNTDOWN BADGE */
+  .countdown-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; padding:3px 8px; border-radius:4px;
+    display:inline-block; margin-left:6px;
+  }
+  .countdown-badge.soon{ background:rgba(199,80,31,0.14); color:var(--coral-dark); }
+  .countdown-badge.normal{ background:rgba(31,122,92,0.12); color:var(--green-dark); }
+  .countdown-badge.today{ background:var(--coral); color:#fff; }
+  .countdown-badge.past{ background:var(--paper-dim); color:var(--text-muted); }
+
+  /* SHARE BUTTON */
+  .share-btn{
+    background:none; border:1px solid var(--border); border-radius:999px; width:30px; height:30px;
+    display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  }
+  .share-btn:hover{ border-color:var(--gold); }
+  .share-btn svg{ width:13px; height:13px; stroke:var(--ink-soft); fill:none; stroke-width:2; }
+
+  /* FAQ ACCORDION */
+  .faq-item{ border-bottom:1px solid var(--border); padding:16px 0; }
+  .faq-item summary{
+    font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:var(--ink); cursor:pointer;
+    list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{ content:'+'; font-size:20px; color:var(--gold-dark); flex-shrink:0; transition:transform .2s ease; }
+  .faq-item[open] summary::after{ transform:rotate(45deg); }
+  .faq-item p{ font-size:14.5px; color:var(--text-muted); margin-top:10px; line-height:1.7; max-width:640px; }
+
+  /* LETTER DOWNLOAD BUTTONS */
+  .letter-actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .letter-actions button{
+    padding:8px 16px; border-radius:999px; border:1px solid #3C4B70; background:transparent;
+    color:#F4EFE2; cursor:pointer; font-size:12.5px;
+  }
+  .letter-actions button:hover{ border-color:var(--gold); }
+
+  /* TOAST (used identically on admin.html) */
+  .toast-stack{ position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+  .toast{
+    background:var(--ink); color:#F4EFE2; padding:12px 18px; border-radius:8px; font-size:13.5px;
+    box-shadow:var(--shadow); display:flex; align-items:center; gap:10px; max-width:320px;
+    animation:toast-in .25s ease;
+  }
+  .toast.error{ background:var(--coral-dark); }
+  @keyframes toast-in{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
+
+  @media print{
+    nav, .ticker-bar, .hero-logo, .assistant, .filter-row, .search-input, .save-btn,
+    .share-btn, .notify-box, .save-btn, .status-pill, footer, #letterForm, .letter-actions,
+    .saved-toggle-row, .chart-panel { display:none !important; }
+    body{ background:#fff; color:#000; }
+    .bcard{ break-inside:avoid; border:1px solid #999; box-shadow:none; }
+    a{ color:#000; text-decoration:underline; }
+    .hero{ padding:0 0 20px; }
+  }
+
+  .app-install{display:none;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--ink);font:600 12px inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+  .app-install.show{display:inline-flex}
+  .mobile-nav{display:none}
+
+
+  .copilot-shell{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:16px}.copilot-card{padding:22px;border:1px solid var(--border);border-radius:20px;background:var(--card)}.copilot-card h3{margin:4px 0 8px}.copilot-summary{color:var(--text-muted);line-height:1.6}.copilot-tasks{display:grid;gap:10px;margin-top:16px}.copilot-task{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--paper)}.copilot-priority{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:7px 9px;border-radius:999px;background:var(--paper-dim);height:max-content}.copilot-task.urgent .copilot-priority{background:#f3dfd8}.copilot-task strong{display:block}.copilot-task small{display:block;color:var(--text-muted);margin-top:4px;line-height:1.5}.copilot-side{background:var(--paper-dim);border-radius:18px;padding:20px}.copilot-side ul{margin:10px 0 0;padding-left:18px;color:var(--ink-soft);line-height:1.7}.copilot-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.copilot-actions button{border:0;border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff}.copilot-status{font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px}
+  @media(max-width:760px){.copilot-shell{grid-template-columns:1fr}}
+
+  .notification-panel{margin-top:14px}.notification-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.notification-list{display:grid;gap:10px;margin-top:14px}.notification-item{padding:15px 16px;border:1px solid var(--border);border-radius:16px;background:var(--paper)}.notification-item.unread{box-shadow:0 0 0 2px rgba(38,76,71,.08)}.notification-item strong{display:block}.notification-item small{display:block;color:var(--text-muted);margin-top:4px}.notification-settings{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}.notification-settings label{display:flex;gap:8px;align-items:center;font-size:13px}.notification-actions{display:flex;gap:9px;flex-wrap:wrap}.notification-actions button{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:999px;padding:9px 13px;font-weight:700;cursor:pointer}.alert-badge{display:inline-flex;min-width:22px;height:22px;padding:0 6px;align-items:center;justify-content:center;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;margin-left:5px}
+
+  @media(max-width:760px){
+    body{padding-bottom:78px}
+    .app-install{display:none!important}
+    .mobile-nav{position:fixed;z-index:1000;left:10px;right:10px;bottom:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:7px 6px calc(7px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:20px;box-shadow:0 12px 30px rgba(20,30,28,.16)}
+    .mobile-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--ink-soft);text-decoration:none;font-size:10px;font-weight:700;border-radius:14px}
+    .mobile-nav a:active{background:var(--paper-dim)}
+    .mobile-nav .mi{font-size:18px;line-height:1}
+    .navrow{padding:10px 16px}
+    .status-pill{max-width:95px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  }
+  .offline-banner{display:none;position:sticky;top:0;z-index:900;padding:8px 14px;background:#fff3d8;border-bottom:1px solid #ead7a8;color:#684f16;text-align:center;font-size:12px;font-weight:700}
+  .offline-banner.show{display:block}
+  .install-tip{display:none;margin:0 auto 14px;max-width:900px;padding:10px 14px;border:1px solid var(--border);border-radius:14px;background:var(--card);font-size:12px;color:var(--ink-soft)}
+  .install-tip.show{display:block}
+
+
+  .account-btn{border:1px solid var(--border);background:var(--card);color:var(--ink);border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer}
+  .account-btn.logged{background:var(--ink);color:#fff}
+  .auth-backdrop{position:fixed;inset:0;background:rgba(24,39,36,.48);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000}
+  .auth-backdrop.show{display:flex}
+  .auth-card{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:28px;box-shadow:0 24px 70px rgba(20,30,28,.25)}
+  .auth-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.auth-close{border:0;background:transparent;font-size:26px;cursor:pointer;color:var(--ink-soft)}
+  .auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--paper-dim);padding:5px;border-radius:14px;margin:18px 0}
+  .auth-tab{border:0;background:transparent;padding:10px;border-radius:10px;font-weight:800;cursor:pointer;color:var(--ink-soft)}.auth-tab.active{background:var(--card);color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.06)}
+  .auth-form{display:grid;gap:13px}.auth-form label{font-size:12px;font-weight:800;color:var(--ink-soft)}.auth-form input,.auth-form select{width:100%;margin-top:6px;padding:12px 13px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--ink);font:inherit}.auth-form button[type=submit]{padding:13px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;cursor:pointer}
+  .auth-message{min-height:20px;font-size:13px;font-weight:700}.auth-message.error{color:#a43d32}.auth-message.ok{color:#2c6b50}
+  .profile-panel{display:none}.profile-panel.show{display:block}.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.profile-card{padding:22px;border:1px solid var(--border);border-radius:20px;background:var(--card)}.profile-actions{display:flex;gap:10px;flex-wrap:wrap}.profile-actions button{border:0;border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer}.profile-save{background:var(--ink);color:#fff}.profile-logout{background:var(--paper-dim);color:var(--ink)}.profile-readiness{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--paper-dim);display:flex;gap:10px;flex-wrap:wrap;align-items:baseline}.profile-readiness strong{font-family:"IBM Plex Mono",monospace;font-size:12px;text-transform:uppercase;letter-spacing:.08em}.profile-readiness span{color:var(--text-muted);font-size:14px}
+
+
+  .copilot-shell{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:16px}.copilot-card{padding:22px;border:1px solid var(--border);border-radius:20px;background:var(--card)}.copilot-card h3{margin:4px 0 8px}.copilot-summary{color:var(--text-muted);line-height:1.6}.copilot-tasks{display:grid;gap:10px;margin-top:16px}.copilot-task{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--paper)}.copilot-priority{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;padding:7px 9px;border-radius:999px;background:var(--paper-dim);height:max-content}.copilot-task.urgent .copilot-priority{background:#f3dfd8}.copilot-task strong{display:block}.copilot-task small{display:block;color:var(--text-muted);margin-top:4px;line-height:1.5}.copilot-side{background:var(--paper-dim);border-radius:18px;padding:20px}.copilot-side ul{margin:10px 0 0;padding-left:18px;color:var(--ink-soft);line-height:1.7}.copilot-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.copilot-actions button{border:0;border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer;background:var(--ink);color:#fff}.copilot-status{font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px}
+  @media(max-width:760px){.copilot-shell{grid-template-columns:1fr}}
+
+  .notification-panel{margin-top:14px}.notification-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.notification-list{display:grid;gap:10px;margin-top:14px}.notification-item{padding:15px 16px;border:1px solid var(--border);border-radius:16px;background:var(--paper)}.notification-item.unread{box-shadow:0 0 0 2px rgba(38,76,71,.08)}.notification-item strong{display:block}.notification-item small{display:block;color:var(--text-muted);margin-top:4px}.notification-settings{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}.notification-settings label{display:flex;gap:8px;align-items:center;font-size:13px}.notification-actions{display:flex;gap:9px;flex-wrap:wrap}.notification-actions button{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:999px;padding:9px 13px;font-weight:700;cursor:pointer}.alert-badge{display:inline-flex;min-width:22px;height:22px;padding:0 6px;align-items:center;justify-content:center;border-radius:999px;background:var(--ink);color:#fff;font-size:11px;margin-left:5px}
+
+
+
+  .private-hub{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px}.private-card{padding:22px;border:1px solid var(--border);border-radius:20px;background:var(--card)}.private-card h3{margin:5px 0 8px}.private-copy{color:var(--text-muted);line-height:1.65}.private-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.private-controls label{font-size:12px;font-weight:800;color:var(--ink-soft)}.private-controls select,.private-controls input{width:100%;margin-top:6px;padding:11px 13px;border:1px solid var(--border);border-radius:11px;background:var(--paper);color:var(--ink);font:inherit}.private-institutions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.private-institution{border:1px solid var(--border);background:var(--paper);border-radius:999px;padding:8px 11px;font-size:12px;font-weight:800;cursor:pointer}.private-institution.active{background:var(--ink);color:#fff;border-color:var(--ink)}.private-results{display:grid;gap:10px;margin-top:16px}.private-result{padding:15px;border:1px solid var(--border);border-radius:16px;background:var(--paper)}.private-result strong{display:block}.private-result small{display:block;color:var(--text-muted);line-height:1.5;margin-top:4px}.private-result a{display:inline-block;margin-top:9px;font-size:12px;font-weight:800;color:var(--ink)}.private-note{margin-top:14px;padding:12px 14px;border-radius:13px;background:var(--paper-dim);font-size:12px;color:var(--text-muted);line-height:1.55}.private-stat{display:flex;gap:10px;align-items:baseline;margin-top:14px}.private-stat b{font-size:28px}.private-stat span{color:var(--text-muted);font-size:13px}@media(max-width:760px){.private-hub{grid-template-columns:1fr}.private-controls{grid-template-columns:1fr}}
+  .readiness-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.readiness-card{padding:22px;border:1px solid var(--border);border-radius:20px;background:var(--card)}.readiness-list{display:grid;gap:10px;margin-top:16px}.readiness-task{display:flex;gap:12px;align-items:flex-start;padding:13px;border:1px solid var(--border);border-radius:14px;background:var(--paper)}.readiness-task input{margin-top:4px;width:18px;height:18px}.readiness-task.done strong{text-decoration:line-through;opacity:.6}.readiness-task small{display:block;color:var(--text-muted);margin-top:3px}.readiness-meter{height:10px;background:var(--paper-dim);border-radius:999px;overflow:hidden;margin:12px 0}.readiness-meter span{display:block;height:100%;width:0%;transition:width .25s ease;background:var(--ink)}.readiness-meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.readiness-percent{font-family:"IBM Plex Mono",monospace;font-size:24px;font-weight:800}.readiness-opportunity{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}.readiness-opportunity:last-child{border-bottom:0}.readiness-opportunity button{border:0;border-radius:12px;padding:10px 14px;background:var(--ink);color:#fff;font-weight:800;cursor:pointer}.readiness-note{color:var(--text-muted);font-size:13px;line-height:1.5}@media(max-width:760px){.readiness-grid{grid-template-columns:1fr}}
+  @media(max-width:760px){.profile-grid{grid-template-columns:1fr}.auth-card{padding:22px}}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="navrow wrap">
+    <a href="#top" class="brand" aria-label="Fundisa home"><img class="brand-logo" src="assets/fundisa-logo.jpg" alt="Fundisa - Your future, funded"><span class="brand-name">Fundisa</span></a>
+    <div style="display:flex; align-items:center; gap:18px;">
+      <div class="navlinks">
+        <a href="#browse">Browse bursaries</a>
+        <a href="#private-universities">Private universities</a>
+        <a href="#radar">Funding Radar</a>
+        <a href="#copilot">AI Copilot</a>
+        <a href="#readiness">Readiness</a>
+        <a href="#notifications">Alerts</a>
+        <a href="#stories">Success stories</a>
+        <a href="#fundraisers">Fundraisers</a>
+        <a href="#letter-helper">Letter helper</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <span class="status-pill offline" id="apiStatus">connecting…</span>
+      <button class="account-btn" id="accountBtn" type="button">Log in</button>
+      <button class="app-install" id="installApp" type="button">Install app</button>
+    </div>
+  </div>
+  <div class="ticker-bar" role="status" aria-label="Recent bursary alerts">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+</nav>
+<div class="offline-banner" id="offlineBanner">You're offline. Fundisa will keep your saved Funding Desk and cached opportunities available.</div>
+<div class="install-tip" id="installTip">You can install Fundisa on your phone for a full-screen app experience. Use your browser menu and choose <strong>Add to Home screen</strong> if your device offers it.</div>
+
+
+<div class="auth-backdrop" id="authBackdrop" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="auth-card">
+    <div class="auth-head"><div><p class="eyebrow">Fundisa account</p><h2 id="authTitle">Keep your funding journey with you.</h2><p>Save your profile so Fundisa can personalise your opportunities across devices.</p></div><button class="auth-close" id="authClose" type="button" aria-label="Close">×</button></div>
+    <div class="auth-tabs"><button class="auth-tab active" id="loginTab" type="button">Log in</button><button class="auth-tab" id="registerTab" type="button">Create account</button></div>
+    <form class="auth-form" id="loginForm">
+      <label>Email<input id="loginEmail" type="email" autocomplete="email" required></label>
+      <label>Password<input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+      <button type="submit">Log in to Fundisa</button><div class="auth-message" id="loginMessage"></div>
+    </form>
+    <form class="auth-form" id="registerForm" style="display:none">
+      <label>Full name<input id="registerName" type="text" autocomplete="name" required></label>
+      <label>Email<input id="registerEmail" type="email" autocomplete="email" required></label>
+      <label>Password<input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required><small>Use at least 8 characters.</small></label>
+      <label>Institution<input id="registerInstitution" type="text" placeholder="e.g. University of Pretoria"></label>
+      <label>Field of study<input id="registerField" type="text" placeholder="e.g. Computer Science"></label>
+      <label>Year of study<select id="registerYear"><option value="">Choose</option><option>1st year</option><option>2nd year</option><option>3rd year</option><option>4th year</option><option>Postgraduate</option></select></label>
+      <button type="submit">Create my Fundisa account</button><div class="auth-message" id="registerMessage"></div>
+    </form>
+  </div>
+</div>
+
+<main id="top">
+  <header class="hero wrap">
+    <div class="hero-row">
+      <div class="hero-copy">
+        <p class="eyebrow">Funding intelligence for South African students</p>
+        <h1>Fundisa doesn't just help you find <em>funding</em>. It helps you avoid missing it.</h1>
+        <p class="lede">Too many students discover bursaries after the deadline, through outdated posts, or after scrolling through opportunities that do not fit them. Fundisa brings relevant opportunities forward, puts deadlines in view, and helps you act before the window closes.</p>
+        <div class="stat-row">
+          <div class="stat"><b id="statCount">•</b><span>open bursaries tracked</span></div>
+          <div class="stat"><b id="statFields">•</b><span>fields of study covered</span></div>
+          <div class="stat"><b>R0</b><span>cost to apply through Fundisa</span></div>
+        </div>
+      </div>
+      <div class="hero-logo">
+        <img src="assets/fundisa-logo.jpg" alt="Fundisa - Your future, funded" width="619" height="506" loading="eager" decoding="async">
+      </div>
+    </div>
+  </header>
+
+  <section id="radar" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Fundisa Funding Radar</p>
+        <h2>Stay ahead of the opportunities that matter.</h2>
+      </div>
+      <p>Fundisa uses the profile on your account to surface relevant opportunities, explain the match, and put the most urgent deadlines in front of you.</p>
+    </div>
+    <div class="radar-shell reveal">
+      <div class="radar-grid">
+        <div class="radar-card">
+          <p class="eyebrow">Your profile</p>
+          <h3>Run your Funding Radar</h3>
+          <p>Your account profile can power this automatically. You can still adjust the field and urgency before running a search. This is a fit signal, not an eligibility decision.</p>
+          <form class="radar-form" id="radarForm">
+            <div>
+              <label for="radarField">Field of study</label>
+              <select id="radarField"><option value="">Choose your field</option></select>
+            </div>
+            <div>
+              <label for="radarUrgency">How soon do you need funding?</label>
+              <select id="radarUrgency">
+                <option value="any">Any deadline</option>
+                <option value="soon">I need funding soon</option>
+              </select>
+            </div>
+            <button type="submit">Run my radar</button>
+          </form>
+          <div class="mini-grid">
+            <div class="mini-stat"><b id="radarActiveCount">0</b><span>open bursaries</span></div>
+            <div class="mini-stat"><b id="radarClosingCount">0</b><span>closing within 14 days</span></div>
+          </div>
+        </div>
+
+        <div class="radar-card">
+          <div class="radar-score-row">
+            <div>
+              <p class="eyebrow">Your readiness</p>
+              <h3 id="radarHeadline">Your funding matches are waiting</h3>
+            </div>
+            <div class="radar-score" id="radarScore">0%<span>FUNDISA FIT</span></div>
+          </div>
+          <div class="radar-meter"><div class="radar-meter-fill" id="radarMeterFill"></div></div>
+          <div id="radarResults" class="radar-list">
+            <p class="radar-empty">Your strongest matches will appear here. Fundisa combines your profile, field fit, and deadline urgency, then explains why each opportunity deserves attention.</p>
+          </div>
+        </div>
+
+        <div class="radar-card">
+          <p class="eyebrow">Funding gap check</p>
+          <h3>See what you still need to cover.</h3>
+          <p>Estimate your yearly study costs and compare them with funding you already have.</p>
+          <div class="gap-form">
+            <input id="gapCost" type="number" min="0" step="500" placeholder="Estimated yearly costs, e.g. 120000" aria-label="Estimated yearly study costs">
+            <input id="gapFunding" type="number" min="0" step="500" placeholder="Funding already secured, e.g. 70000" aria-label="Funding already secured">
+          </div>
+          <div class="gap-result" id="gapResult">Enter both amounts to calculate your estimated funding gap.</div>
+          <p class="gap-note">This is a planning estimate only. A gap does not mean Fundisa can guarantee that another bursary will cover it.</p>
+        </div>
+
+        <div class="radar-card">
+          <p class="eyebrow">Deadline Rescue</p>
+          <h3>See what needs your attention next.</h3>
+          <p>Fundisa puts the nearest closing opportunities first so you can act before the window disappears.</p>
+          <div id="deadlineRescue" class="rescue-list"></div>
+        </div>
+      </div>
+      <div class="brand-promise"><p>The Fundisa promise</p><strong>YOUR FUTURE FUNDED</strong></div>
+    </div>
+  </section>
+
+  <section id="browse" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">The catalogue</p>
+        <h2>Open bursaries, by field</h2>
+      </div>
+      <p>Real, currently-open South African bursaries, served live from the Fundisa database. Filter by field or search by name.</p>
+    </div>
+    <div class="chart-panel reveal" id="chartPanel" style="display:none;">
+      <div class="chart-panel-head">
+        <h3>Bursaries by field of study</h3>
+        <span id="chartTotalLabel"></span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="fieldChart"></canvas></div>
+    </div>
+    <input class="search-input" id="searchInput" type="text" placeholder="Search by bursary or provider name…" aria-label="Search bursaries">
+    <div class="saved-toggle-row">
+      <button class="saved-toggle" id="savedToggle" type="button">★ Saved only (<span id="savedCount">0</span>)</button>
+    </div>
+    <div class="filter-row" id="filterRow"></div>
+    <div class="grid" id="bursaryGrid"></div>
+  </section>
+
+
+
+
+  <section id="private-universities" class="wrap">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Private university funding</p><h2>Funding should not stop at public universities.</h2></div>
+      <p>Students at private institutions deserve a funding search too. Choose your institution below and Fundisa will surface bursaries that may be relevant to your course and study situation.</p>
+    </div>
+    <div class="private-hub reveal">
+      <div class="private-card">
+        <p class="eyebrow">Private University Funding Hub</p>
+        <h3 id="privateHubHeadline">Find funding for private study.</h3>
+        <p class="private-copy">Fundisa does not assume that a bursary covers private tuition. It flags opportunities that look potentially relevant, then sends you to the provider's official information so you can confirm whether your institution and qualification are accepted.</p>
+        <div class="private-controls">
+          <label>Private institution
+            <select id="privateInstitution">
+              <option value="Any private institution">Any private institution</option>
+              <option>Richfield Graduate Institute of Technology</option>
+              <option>Rosebank College</option>
+              <option>IIE Varsity College</option>
+              <option>IIE Vega</option>
+              <option>IIE MSA</option>
+              <option>Boston City Campus</option>
+              <option>CTU Training Solutions</option>
+              <option>Eduvos</option>
+              <option>STADIO Higher Education</option>
+              <option>MANCOSA</option>
+              <option>Milpark Education</option>
+              <option>Regent Business School</option>
+              <option>Regenesys Education</option>
+              <option>Rostec Technical FET College</option>
+              <option>Other private institution</option>
+            </select>
+          </label>
+          <label>Field of study
+            <select id="privateField"><option value="All fields">All fields</option></select>
+          </label>
+        </div>
+        <div class="private-institutions" id="privateInstitutionChips" aria-label="Popular private institutions"></div>
+        <div class="private-stat"><b id="privateResultCount">0</b><span>potentially relevant open opportunities</span></div>
+        <div class="private-results" id="privateResults"><p class="radar-empty">Choose an institution or field to see potential matches.</p></div>
+        <div class="private-note">Important: "potentially relevant" is not a funding guarantee. Some providers restrict funding to public universities, partner institutions, specific qualifications, or other conditions. Always confirm the provider's current rules before applying.</div>
+      </div>
+      <aside class="private-card">
+        <p class="eyebrow">Why this matters</p>
+        <h3>One Fundisa. Every student.</h3>
+        <p class="private-copy">A student at Richfield, Rostec, Rosebank College, Varsity College, MANCOSA or another private institution should not have to search a completely different system just because their campus is private.</p>
+        <p class="private-copy">Fundisa's goal is to search across the funding landscape and make the institution type part of the matching conversation, while leaving the final eligibility decision with the bursary provider.</p>
+        <button class="primary" id="privateBrowseAll" type="button" style="margin-top:10px">Browse the full bursary catalogue</button>
+      </aside>
+    </div>
+  </section>
+
+  <section id="copilot" class="wrap">
+    <div class="section-head reveal"><div><p class="eyebrow">Fundisa AI Copilot</p><h2>Know what to focus on today.</h2></div><p>Your Copilot turns your profile, saved bursaries, application status, and deadlines into a short funding action plan. It helps you decide what to do next without making eligibility decisions for you.</p></div>
+    <div class="copilot-shell reveal">
+      <div class="copilot-card">
+        <p class="eyebrow">Today's funding plan</p>
+        <h3 id="copilotHeadline">Log in to activate your Copilot.</h3>
+        <p class="copilot-summary" id="copilotSummary">Fundisa will look at the opportunities you are tracking and help you focus on the next useful action.</p>
+        <div class="copilot-tasks" id="copilotTasks"><div class="radar-empty">Your personalised tasks will appear here.</div></div>
+        <div class="copilot-actions"><button id="runCopilot" type="button">Build my plan</button></div>
+        <div class="copilot-status" id="copilotStatus"></div>
+      </div>
+      <aside class="copilot-side">
+        <strong>What Copilot uses</strong>
+        <ul><li>Your Fundisa profile</li><li>Saved and Applied opportunities</li><li>Known deadline dates</li><li>Current Funding Radar matches</li></ul>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:14px">A Copilot suggestion is a planning aid. Always confirm the provider's current requirements and deadline before applying.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="notifications" class="wrap profile-panel">
+    <div class="section-head reveal"><div><p class="eyebrow">Fundisa alerts</p><h2>Do not miss the funding window.</h2></div><p>Fundisa can watch your saved opportunities and send reminders before deadlines. You control which alerts you receive.</p></div>
+    <div class="profile-card reveal notification-panel">
+      <div class="notification-head"><div><strong>Your notifications</strong><div id="notificationSummary" style="color:var(--text-muted);font-size:13px;margin-top:4px">Log in to see your funding alerts.</div></div><div class="notification-actions"><button type="button" id="markNotificationsRead">Mark all as read</button><button type="button" id="refreshNotifications">Refresh</button></div></div>
+      <div class="notification-list" id="notificationList"><p class="radar-empty">Your alerts will appear here.</p></div>
+      <div class="notification-settings">
+        <label><input id="prefDeadlines" type="checkbox" checked> Deadline reminders</label>
+        <label><input id="prefMatches" type="checkbox" checked> New matching bursaries</label>
+        <label><input id="prefUpdates" type="checkbox" checked> Bursary updates</label>
+      </div>
+      <div style="margin-top:12px"><button class="profile-save" id="saveNotificationPrefs" type="button">Save alert preferences</button></div>
+      <div class="auth-message" id="notificationMessage"></div>
+    </div>
+  </section>
+
+  <section id="profile" class="wrap profile-panel">
+    <div class="section-head reveal"><div><p class="eyebrow">Your Fundisa profile</p><h2>Make your Funding Radar personal.</h2></div><p>Your profile is stored in your Fundisa account so your funding preferences are not lost when you change devices.</p></div>
+    <div class="profile-card reveal">
+      <form class="auth-form" id="profileForm">
+        <div class="profile-grid">
+          <label>Full name<input id="profileName" type="text" required></label>
+          <label>Email<input id="profileEmail" type="email" disabled></label>
+          <label>Institution<input id="profileInstitution" type="text"></label>
+          <label>Field of study<input id="profileField" type="text"></label>
+          <label>Year of study<select id="profileYear"><option value="">Choose</option><option>1st year</option><option>2nd year</option><option>3rd year</option><option>4th year</option><option>Postgraduate</option></select></label>
+        </div>
+        <div class="profile-actions"><button class="profile-save" type="submit">Save profile</button><button class="profile-logout" id="logoutBtn" type="button">Log out</button></div>
+        <div class="auth-message" id="profileMessage"></div>
+        <div class="profile-readiness" id="profileReadiness" aria-live="polite"><strong>Profile readiness</strong><span id="profileReadinessText">Complete your profile to unlock stronger Funding Radar matches.</span></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="funding-desk" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Your Funding Desk</p>
+        <h2>Keep the opportunities you saved moving.</h2>
+      </div>
+      <p>Saved bursaries are not just bookmarks. Track your next step, mark applications, or jump back in when you need another route.</p>
+    </div>
+    <div class="radar-card reveal">
+      <div class="desk-grid" id="fundingDesk"></div>
+    </div>
+  </section>
+
+
+  <section id="readiness" class="wrap profile-panel">
+    <div class="section-head reveal"><div><p class="eyebrow">Application Readiness</p><h2>Turn a saved bursary into a clear next-step checklist.</h2></div><p>Fundisa helps you prepare and track an application without asking you to upload private documents. Always confirm the provider's official requirements before submitting.</p></div>
+    <div class="readiness-grid">
+      <div class="readiness-card reveal">
+        <div class="readiness-meta"><div><strong id="readinessBursaryName">Choose a saved bursary</strong><div class="readiness-note" id="readinessBursaryMeta">Your checklist will appear here.</div></div><span class="readiness-percent" id="readinessPercent">0%</span></div>
+        <div class="readiness-meter"><span id="readinessBar"></span></div>
+        <div class="readiness-list" id="readinessTasks"><p class="radar-empty">Log in and save a bursary to start tracking application readiness.</p></div>
+        <p class="readiness-note" style="margin-top:16px">Checklist items are planning prompts, not a confirmation that you meet the provider's eligibility criteria.</p>
+      </div>
+      <aside class="readiness-card reveal">
+        <strong>Your tracked opportunities</strong>
+        <p class="readiness-note">Select an opportunity to build or continue its checklist.</p>
+        <div id="readinessOpportunities"><p class="radar-empty">Your saved opportunities will appear here.</p></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- STEP 1: STUDENT SUCCESS STORIES SECTION -->
+  <section id="stories" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Inspiration</p>
+        <h2>Student Success Stories</h2>
+      </div>
+      <p>Read how students from universities and colleges across South Africa secured funding and built thriving careers through Fundisa.</p>
+    </div>
+    <div class="grid" id="storyGrid">
+      <div class="story-card reveal">
+        <div>
+          <div class="story-avatar">K</div>
+          <p class="story-author">Kagiso Molefe</p>
+          <p class="story-meta">University of the Witwatersrand · Mechanical Engineering</p>
+          <p class="story-text">"I was on the verge of dropping out during my second year due to outstanding fees. Fundisa matched me with a private engineering bursary I didn't even know existed. Today, I'm a fully qualified design engineer!"</p>
+        </div>
+        <div>
+          <span class="story-badge">Funded via Fundisa</span>
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div>
+          <div class="story-avatar">Z</div>
+          <p class="story-author">Zinhle Dlamini</p>
+          <p class="story-meta">University of Pretoria · Computer Science &amp; IT</p>
+          <p class="story-text">"Writing motivational letters used to overwhelm me until I used Fundisa's guidance. The platform connected me to an ICT sector bursary that covered tuition, laptop, and living expenses."</p>
+        </div>
+        <div>
+          <span class="story-badge">Funded via Fundisa</span>
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div>
+          <div class="story-avatar">T</div>
+          <p class="story-author">Thabo Mokoena</p>
+          <p class="story-meta">University of Cape Town · MBChB (Medicine)</p>
+          <p class="story-text">"Medical school costs seemed impossible for my family. Through Fundisa, I tracked open healthcare bursaries with clear deadlines. Now doing my internship in Gauteng!"</p>
+        </div>
+        <div>
+          <span class="story-badge">Funded via Fundisa</span>
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div>
+          <div class="story-avatar">N</div>
+          <p class="story-author">Nkosana Sibanda</p>
+          <p class="story-meta">Richfield Graduate Institute · Information Technology</p>
+          <p class="story-text">"Fundisa helped me find tech-focused funding that matched my diploma goals. The step-by-step guidance ensured my documentation was flawless."</p>
+        </div>
+        <div>
+          <span class="story-badge">Funded via Fundisa</span>
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div>
+          <div class="story-avatar">L</div>
+          <p class="story-author">Lerato Sithole</p>
+          <p class="story-meta">University of Johannesburg · BCom Accounting</p>
+          <p class="story-text">"I applied to five bursaries suggested by Fundisa and received two offers! I'm now completing my articles at a top firm thanks to early bursary tracking."</p>
+        </div>
+        <div>
+          <span class="story-badge">Funded via Fundisa</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-strip">
+    <blockquote id="quoteText">"Education is the most powerful weapon which you can use to change the world."</blockquote>
+    <cite id="quoteCite">• Nelson Mandela</cite>
+  </section>
+
+  <section id="assistant" class="wrap">
+    <div class="assistant reveal">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">AI bursary matching</p>
+          <h2>Tell it your field. It'll find your fit.</h2>
+        </div>
+        <p>Describe what you're studying (or want to study) and the assistant will pull the closest matches from the catalogue and explain why each one fits.</p>
+      </div>
+      <form class="ai-form" id="aiForm">
+        <input type="text" id="aiInput" placeholder="e.g. second-year mechanical engineering student, or 'want to study law'" aria-label="Describe your field of study">
+        <button type="submit" id="aiSubmit">Find my matches</button>
+      </form>
+      <p class="ai-hint">Powered by Gemini, running through the Fundisa backend • the assistant only sees bursaries that actually exist in the database.</p>
+      <p class="ai-error" id="aiError"></p>
+      <div class="ai-loading" id="aiLoading"><span class="spinner" aria-hidden="true"></span><span>Reading through the catalogue…</span></div>
+      <div class="ai-results" id="aiResults"></div>
+    </div>
+  </section>
+
+  <section id="fundraisers" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Community-backed funding</p>
+        <h2>Student fundraisers</h2>
+      </div>
+      <p>For the gaps bursaries don't cover • registration deposits, a specific textbook, one term's rent. Fundisa doesn't process the donations itself; every campaign links straight to the student's real, verified fundraising page.</p>
+    </div>
+    <p class="fundraiser-note">Every campaign here is a real South African student, added and checked by the Fundisa team before it's listed • not a payment collected by Fundisa directly.</p>
+    <div class="grid" id="campaignGrid"></div>
+  </section>
+
+  <section id="letter-helper" class="wrap">
+    <div class="assistant reveal">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">AI letter assistant</p>
+          <h2>Draft your motivational letter.</h2>
+        </div>
+        <p>Start with your own words first • your field, your story, achievements and circumstances. Fundisa AI then turns your draft into a clearer first version in your voice. You personalize and verify it from there.</p>
+      </div>
+      <form class="letter-form" id="letterForm">
+        <div class="letter-row">
+          <input type="text" id="letterName" placeholder="Your full name" aria-label="Your name">
+          <input type="text" id="letterField" placeholder="Field of study (optional)" aria-label="Field of study">
+        </div>
+        <input type="text" id="letterTarget" placeholder="Bursary or programme you're applying to (optional)" aria-label="Target bursary">
+        <textarea id="letterPoints" placeholder="Paste or write your own first draft here. Include your story, achievements, circumstances, what you're studying and why • the AI will work from what you provide." aria-label="Your story and achievements"></textarea>
+        <button type="submit" id="letterSubmit">Draft my letter</button>
+      </form>
+      <p class="ai-hint">This is a first draft based only on what you tell it, nothing invented • read it over, personalize it, and check every detail before you submit it anywhere.</p>
+      <p class="ai-error" id="letterError"></p>
+      <div class="ai-loading" id="letterLoading"><span class="spinner" aria-hidden="true"></span><span>Drafting your letter…</span></div>
+      <div class="letter-output" id="letterOutput">
+        <div class="letter-text" id="letterText"></div>
+        <div class="letter-actions">
+          <button type="button" class="letter-copy-btn" id="letterCopy">Copy letter</button>
+          <button type="button" id="letterDownloadTxt">Download .txt</button>
+          <button type="button" id="letterDownloadDoc">Download Word doc</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Turn on Bursary Radar</p>
+        <h2>Let Fundisa watch the funding landscape for you.</h2>
+      </div>
+    </div>
+    <div class="notify-box">
+      <input type="email" id="notifyEmail" placeholder="you@email.com" aria-label="Email address">
+      <select id="notifyField" aria-label="Field of study"><option value="">Any field</option></select>
+      <button id="notifyBtn">Notify me</button>
+    </div>
+    <p class="notify-msg" id="notifyMsg"></p>
+    <p class="ai-hint" style="color:var(--text-muted);">You’ll receive a confirmation email first. After that, Fundisa can alert you when a relevant bursary is added or materially updated in your chosen field.</p>
+  </section>
+
+  <section id="mission" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Why Fundisa exists</p>
+        <h2>Talent shouldn't lose to a closing date.</h2>
+      </div>
+    </div>
+    <p style="font-size:16px; color:var(--text-muted); max-width:700px; line-height:1.8;">
+      Students should not have to choose between staying in class and paying for registration, accommodation, food, transport, textbooks, data, or the next semester. Yet many are left searching the internet for funding and finding pages that are outdated, already closed, or simply irrelevant to their course and circumstances. By the time a student finds the right opportunity, the deadline can already be gone.
+      <br><br>
+      Fundisa exists to change that experience. We bring relevant funding opportunities into one place, make deadlines visible, help students understand what an opportunity is really asking for, and give them tools to prepare and keep moving when one route closes. The goal is simple: help students avoid missing the funding that could keep their education moving.
+    </p>
+    <div class="brand-promise" style="text-align:left; padding-left:0; max-width:700px;">
+      <p>The Fundisa promise</p>
+      <strong>YOUR FUTURE FUNDED</strong>
+    </div>
+  </section>
+
+  <section id="about" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Leadership</p>
+        <h2>Meet Our Founder &amp; CEO</h2>
+      </div>
+    </div>
+    <div class="about">
+      <div class="about-note reveal" style="max-width:680px;">
+        <p class="founder-name">Nqobile Ngubani</p>
+        <p class="founder-title">Founder &amp; Chief Executive Officer, Fundisa</p>
+        <p>Driven by a passion for technology, systems design, and educational empowerment, Nqobile Ngubani founded Fundisa to solve one of the most critical challenges facing students today: accessible financial aid and educational resources.</p>
+        <p>Currently pursuing a Bachelor of Science in Information Technology, Nqobile combines technical proficiency in software architecture and database design with a deep personal commitment to community upliftment. Having witnessed firsthand the financial hurdles that talented students encounter•from registration deposits to textbook costs•Nqobile engineered Fundisa to bridge the gap between ambitious learners, funding opportunities, and community support.</p>
+        <blockquote class="founder-quote">
+          "Education should be determined by talent and determination, not financial constraint. Fundisa was built to ensure every student has the tools, funding, and community backing needed to reach graduation."
+          <cite>• Nqobile Ngubani</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Before you ask</p>
+        <h2>Frequently asked questions</h2>
+      </div>
+    </div>
+    <div class="reveal" style="max-width:720px;">
+      <details class="faq-item">
+        <summary>Is Fundisa affiliated with NSFAS, Sasol, or the other bursary providers listed?</summary>
+        <p>No • Fundisa is an independent, student-built directory. We link to real, currently-open bursaries so you can find and apply to them. Always confirm deadlines and requirements on the provider's own site before applying, since those can change on their end.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How current is the bursary information?</summary>
+        <p>Fundisa combines automated bursary data feeds with freshness checks against public provider information. Listings can still change at the source, so use the "Learn more" link on any bursary to confirm the latest deadline and requirements before you apply.</p>
+      </details>
+      <details class="faq-item">
+        <summary>How does the AI bursary matching work, and is my data used for anything?</summary>
+        <p>You describe your field of study, and Fundisa sends that description • along with its bursary list • to Google's Gemini AI to suggest the closest fits. On Gemini's free tier, Google may use submitted prompts to improve their products, so avoid including anything you wouldn't want reviewed. It isn't stored anywhere by Fundisa beyond that one request.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Will the AI letter assistant write my whole application for me?</summary>
+        <p>No. It drafts a first version based only on what you tell it about yourself, and is explicitly built to never invent achievements, grades, or circumstances you didn't mention. Read it over, personalize it, and check every detail before you submit it anywhere • it's a starting point, not a finished product.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Does Fundisa process donations for the student fundraisers?</summary>
+        <p>No. Every fundraiser links out to the student's own real donation page • BackaBuddy, GoFundMe, a bank account, whatever they already use. Fundisa lists the story; the money never passes through Fundisa itself.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Is Fundisa free to use?</summary>
+        <p>Yes, entirely. Browsing bursaries, the AI assistant, the letter helper, and the fundraiser listings cost nothing to use.</p>
+      </details>
+      <details class="faq-item">
+        <summary>I'm a student • how do I get my bursary or fundraiser listed?</summary>
+        <p>Right now listings go through the Fundisa team directly rather than a public submission form • reach out with the details and it'll be reviewed and added.</p>
+      </details>
+      <details class="faq-item">
+        <summary>I found an error in a listing • what should I do?</summary>
+        <p>Please flag it. Accuracy matters most here, since this is information students use to make real decisions • reach out to the Fundisa team with what looks wrong and it'll be corrected.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<button class="chatbot-launcher" id="chatbotLauncher" type="button" aria-label="Open Fundisa Chatbot" aria-expanded="false"><span>Fundisa<br>Chat</span></button>
+<div class="chatbot-panel" id="chatbotPanel" aria-label="Fundisa Chatbot">
+  <div class="chatbot-head">
+    <div><h3>Fundisa Chatbot</h3><p>Ask about bursaries, deadlines, eligibility or using Fundisa.</p></div>
+    <button class="chatbot-close" id="chatbotClose" type="button" aria-label="Close chat">×</button>
+  </div>
+  <div class="chatbot-messages" id="chatbotMessages" aria-live="polite">
+    <div class="chat-msg bot">Hi 👋 I’m Fundisa Chatbot. Ask me about a bursary, eligibility, deadlines, documents, or how Fundisa works.</div>
+  </div>
+  <form class="chatbot-form" id="chatbotForm">
+    <input id="chatbotInput" type="text" placeholder="Ask Fundisa Chatbot…" autocomplete="off" aria-label="Message Fundisa Chatbot">
+    <button id="chatbotSend" type="submit">Send</button>
+  </form>
+  <div class="chatbot-note">AI can make mistakes. Always confirm important details on the official bursary provider site.</div>
+</div>
+
+<footer>
+  <p class="wrap">FUNDISA · BUILT BY NQOBILE · DATA SERVED FROM THE FUNDISA BACKEND · YOUR FUTURE FUNDED</p>
+</footer>
+
+<script>
+// Point this at wherever the backend is running.
+// Local dev default matches backend/server.js's default port.
+const DEFAULT_API_BASE = (window.location.protocol === 'file:' || ['localhost','127.0.0.1'].includes(window.location.hostname)) ? 'http://localhost:5000' : (window.location.hostname.endsWith('.onrender.com') ? window.location.origin : 'https://fundisa-backend.onrender.com');
+const API_BASE = window.FUNDISA_API_BASE || DEFAULT_API_BASE;
+
+// OPTIONAL SUPABASE CONFIGURATION:
+// Replace these values with your real Supabase credentials if fetching live directly from Supabase.
+window.SUPABASE_CONFIG = window.SUPABASE_CONFIG || {
+  url: '',
+  anonKey: ''
+};
+
+let supabaseClient = null;
+if (window.SUPABASE_CONFIG.url && window.SUPABASE_CONFIG.anonKey && typeof supabase !== 'undefined') {
+  supabaseClient = supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+}
+
+const QUOTES = [
+  { text:'Education is the most powerful weapon which you can use to change the world.', cite:'Nelson Mandela' },
+  { text:'The beautiful thing about learning is that no one can take it away from you.', cite:'B.B. King' },
+  { text:'An investment in knowledge pays the best interest.', cite:'Benjamin Franklin' },
+  { text:'The expert in anything was once a beginner.', cite:'Anonymous' },
+  { text:"Every application you submit is a door you didn't leave closed.", cite:'Fundisa' },
+  { text:'Success is the sum of small efforts, repeated day in and day out.', cite:'Robert Collier' },
+  { text:"Funding isn't luck. It's paperwork done on time.", cite:'Fundisa' }
+];
+
+// STEP 2: 10 ADDITIONAL BURSARIES INCLUDED IN FRONT-END FALLBACK DATASET
+const ADDITIONAL_BURSARIES = [
+  {
+    id: "add-1",
+    name: "Standard Bank Group Bursary",
+    provider: "Standard Bank",
+    description: "Full funding for undergraduate and postgraduate students in Commerce, IT, Data Science, and Engineering.",
+    fields: ["Commerce", "Computer Science", "Engineering"],
+    deadline: "Closes 30 November 2026",
+    deadline_date: "2026-11-30",
+    status: "open",
+    url: "https://www.standardbank.com"
+  },
+  {
+    id: "add-2",
+    name: "AECI General Bursary Scheme",
+    provider: "AECI",
+    description: "Covers tuition, accommodation, and book allowance for Chemical, Mechanical, and Environmental Engineering.",
+    fields: ["Engineering", "Science"],
+    deadline: "Closes 31 October 2026",
+    deadline_date: "2026-10-31",
+    status: "open",
+    url: "https://www.aeciworld.com"
+  },
+  {
+    id: "add-3",
+    name: "Old Mutual Education Trust Bursary",
+    provider: "Old Mutual",
+    description: "Support for higher education studies in Actuarial Science, Accounting, Finance, and Information Technology.",
+    fields: ["Commerce", "Computer Science"],
+    deadline: "Closes 15 November 2026",
+    deadline_date: "2026-11-15",
+    status: "open",
+    url: "https://www.oldmutual.co.za"
+  },
+  {
+    id: "add-4",
+    name: "Exxaro Mining & Technology Bursary",
+    provider: "Exxaro",
+    description: "Comprehensive financial assistance for Mining Engineering, Geology, and Industrial Engineering students.",
+    fields: ["Engineering", "Science"],
+    deadline: "Closes 30 October 2026",
+    deadline_date: "2026-10-30",
+    status: "open",
+    url: "https://www.exxaro.com"
+  },
+  {
+    id: "add-5",
+    name: "Shoprite Group Accounting & IT Bursary",
+    provider: "Shoprite Group",
+    description: "Bursaries for Information Technology, Data Analytics, Accounting, and Supply Chain Management.",
+    fields: ["Computer Science", "Commerce"],
+    deadline: "Closes 30 November 2026",
+    deadline_date: "2026-11-30",
+    status: "open",
+    url: "https://www.shopriteholdings.co.za"
+  },
+  {
+    id: "add-6",
+    name: "Discovery Health & Science Bursary",
+    provider: "Discovery",
+    description: "Funding for Health Sciences, Medicine, Actuarial Science, and Computer Science students.",
+    fields: ["Health Sciences", "Computer Science", "Commerce"],
+    deadline: "Closes 31 October 2026",
+    deadline_date: "2026-10-31",
+    status: "open",
+    url: "https://www.discovery.co.za"
+  },
+  {
+    id: "add-7",
+    name: "Transnet Undergraduate Bursary",
+    provider: "Transnet",
+    description: "Covers tuition and accommodation for Electrical, Mechanical, Civil, and Industrial Engineering.",
+    fields: ["Engineering"],
+    deadline: "Closes 15 December 2026",
+    deadline_date: "2026-12-15",
+    status: "open",
+    url: "https://www.transnet.net"
+  },
+  {
+    id: "add-8",
+    name: "Investec Tertiary Bursary",
+    provider: "Investec",
+    description: "Financial aid for ambitious students pursuing degrees in Commerce, Technology, and Mathematics.",
+    fields: ["Commerce", "Computer Science"],
+    deadline: "Closes 30 November 2026",
+    deadline_date: "2026-11-30",
+    status: "open",
+    url: "https://www.investec.com"
+  },
+  {
+    id: "add-9",
+    name: "CSIR Tertiary Bursary Programme",
+    provider: "CSIR",
+    description: "Bursary scheme focused on Science, Engineering, Technology, and Applied Mathematics degrees.",
+    fields: ["Science", "Engineering", "Computer Science"],
+    deadline: "Closes 31 October 2026",
+    deadline_date: "2026-10-31",
+    status: "open",
+    url: "https://www.csir.co.za"
+  },
+  {
+    id: "add-10",
+    name: "PwC Accounting & Tech Bursary",
+    provider: "PwC South Africa",
+    description: "Funding for Chartered Accounting candidates as well as Cybersecurity and Software Engineering students.",
+    fields: ["Commerce", "Computer Science"],
+    deadline: "Closes 30 November 2026",
+    deadline_date: "2026-11-30",
+    status: "open",
+    url: "https://www.pwc.co.za"
+  }
+];
+
+let BURSARIES = [];
+let ALL_FIELDS = ['All'];
+let activeField = 'All';
+let searchTerm = '';
+let showSavedOnly = false;
+
+function loadSavedIds(){
+  try {
+    const raw = localStorage.getItem('fundisa-saved-bursaries');
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch { return new Set(); }
+}
+function persistSavedIds(){
+  try { localStorage.setItem('fundisa-saved-bursaries', JSON.stringify([...savedBursaryIds])); } catch {}
+}
+let savedBursaryIds = loadSavedIds();
+
+async function api(path, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), Number(options.timeoutMs || 30000));
+  try {
+    const { timeoutMs, ...fetchOptions } = options;
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...fetchOptions,
+      signal: controller.signal,
+      headers: { 'Content-Type': 'application/json', ...(fetchOptions.headers || {}) }
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+    return data;
+  } catch (err) {
+    if (err?.name === 'AbortError') throw new Error('The AI request took too long. Please try again.');
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+
+const STUDENT_TOKEN_KEY = 'fundisa-student-token';
+let currentStudent = null;
+function studentHeaders(){
+  const token = localStorage.getItem(STUDENT_TOKEN_KEY);
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+async function studentApi(path, options = {}) {
+  return api(path, { ...options, headers: { ...studentHeaders(), ...(options.headers || {}) } });
+}
+function openAuth(mode='login'){
+  document.getElementById('authBackdrop').classList.add('show');
+  setAuthMode(mode);
+}
+function closeAuth(){ document.getElementById('authBackdrop').classList.remove('show'); }
+function setAuthMode(mode){
+  const login = mode === 'login';
+  document.getElementById('loginForm').style.display = login ? 'grid' : 'none';
+  document.getElementById('registerForm').style.display = login ? 'none' : 'grid';
+  document.getElementById('loginTab').classList.toggle('active', login);
+  document.getElementById('registerTab').classList.toggle('active', !login);
+  document.getElementById('authTitle').textContent = login ? 'Welcome back to Fundisa.' : 'Create your Fundisa account.';
+}
+function setAuthMessage(id, text, ok=false){ const el=document.getElementById(id); el.textContent=text; el.className='auth-message '+(ok?'ok':'error'); }
+async function syncStudentSaved(){
+  if(!currentStudent) return;
+  try {
+    const data = await studentApi('/api/student/saved');
+    data.saved.forEach(item => savedBursaryIds.add(item.id));
+    persistSavedIds();
+    renderGrid(); renderDeadlineRescue(); renderFundingDesk(); renderReadinessOpportunities();
+  } catch (err) { console.warn('Account saved sync skipped:', err.message); }
+}
+function updateProfileReadiness(){
+  const el = document.getElementById('profileReadinessText');
+  if(!el || !currentStudent) return;
+  const checks = [currentStudent.name, currentStudent.institution, currentStudent.study_field, currentStudent.study_year];
+  const complete = checks.filter(Boolean).length;
+  const pct = Math.round(complete / checks.length * 100);
+  el.textContent = `${pct}% complete. ${complete < 4 ? 'Add the missing profile details for stronger personalised matches.' : 'Your profile is ready to power personalised Funding Radar results.'}`;
+}
+
+function renderStudentUI(){
+  const btn=document.getElementById('accountBtn');
+  const panel=document.getElementById('profile');
+  if(currentStudent){
+    btn.textContent = `Hi, ${currentStudent.name.split(' ')[0]}`; btn.classList.add('logged');
+    panel.classList.add('show');
+    document.getElementById('profileName').value=currentStudent.name||'';
+    document.getElementById('profileEmail').value=currentStudent.email||'';
+    document.getElementById('profileInstitution').value=currentStudent.institution||'';
+    document.getElementById('profileField').value=currentStudent.study_field||'';
+    document.getElementById('profileYear').value=currentStudent.study_year||'';
+    if(currentStudent.study_field){ localStorage.setItem('fundisa-radar-profile', JSON.stringify({field:currentStudent.study_field, urgency:'any'})); }
+    updateProfileReadiness();
+    syncStudentSaved();
+    renderReadinessOpportunities();
+    loadCopilot();
+    if(document.getElementById('radarField') && currentStudent.study_field){ document.getElementById('radarField').value = currentStudent.study_field; renderRadarResults(currentStudent.study_field, document.getElementById('radarUrgency').value || 'any'); }
+  } else {
+    renderReadinessOpportunities();
+    btn.textContent='Log in'; btn.classList.remove('logged'); panel.classList.remove('show');
+  }
+}
+async function loadStudent(){
+  const token=localStorage.getItem(STUDENT_TOKEN_KEY);
+  if(!token){ renderStudentUI(); return; }
+  try { const data=await studentApi('/api/auth/me'); currentStudent=data.student; renderStudentUI(); }
+  catch { localStorage.removeItem(STUDENT_TOKEN_KEY); currentStudent=null; renderStudentUI(); }
+}
+function initStudentAuth(){
+  document.getElementById('accountBtn').addEventListener('click',()=> currentStudent ? document.getElementById('profile').scrollIntoView({behavior:'smooth'}) : openAuth('login'));
+  document.getElementById('authClose').addEventListener('click',closeAuth);
+  document.getElementById('authBackdrop').addEventListener('click',e=>{ if(e.target.id==='authBackdrop') closeAuth(); });
+  document.getElementById('loginTab').addEventListener('click',()=>setAuthMode('login'));
+  document.getElementById('registerTab').addEventListener('click',()=>setAuthMode('register'));
+  document.getElementById('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault(); setAuthMessage('loginMessage','Signing you in…',true);
+    try { const data=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPassword').value})}); localStorage.setItem(STUDENT_TOKEN_KEY,data.token); currentStudent=data.student; closeAuth(); renderStudentUI(); showToast('Welcome back to Fundisa.'); }
+    catch(err){ setAuthMessage('loginMessage',err.message); }
+  });
+  document.getElementById('registerForm').addEventListener('submit',async e=>{
+    e.preventDefault(); setAuthMessage('registerMessage','Creating your account…',true);
+    try { const data=await api('/api/auth/register',{method:'POST',body:JSON.stringify({name:document.getElementById('registerName').value,email:document.getElementById('registerEmail').value,password:document.getElementById('registerPassword').value,institution:document.getElementById('registerInstitution').value,study_field:document.getElementById('registerField').value,study_year:document.getElementById('registerYear').value})}); localStorage.setItem(STUDENT_TOKEN_KEY,data.token); currentStudent=data.student; closeAuth(); renderStudentUI(); showToast('Your Fundisa account is ready.'); }
+    catch(err){ setAuthMessage('registerMessage',err.message); }
+  });
+  document.getElementById('profileForm').addEventListener('submit',async e=>{
+    e.preventDefault(); const el=document.getElementById('profileMessage'); el.textContent='Saving…'; el.className='auth-message ok';
+    try { const data=await studentApi('/api/auth/profile',{method:'PUT',body:JSON.stringify({name:profileName.value,institution:profileInstitution.value,study_field:profileField.value,study_year:profileYear.value})}); currentStudent=data.student; renderStudentUI(); showToast('Profile saved.'); }
+    catch(err){ el.textContent=err.message; el.className='auth-message error'; }
+  });
+  document.getElementById('logoutBtn').addEventListener('click',async()=>{ try{await studentApi('/api/auth/logout',{method:'POST'});}catch{} localStorage.removeItem(STUDENT_TOKEN_KEY); currentStudent=null; renderStudentUI(); showToast('You have been logged out.'); });
+}
+
+
+
+function renderCopilotPlan(plan){
+  document.getElementById('copilotHeadline').textContent=plan.headline||'Your funding focus for today.';
+  document.getElementById('copilotSummary').textContent=plan.summary||'';
+  const tasks=Array.isArray(plan.tasks)?plan.tasks:[];
+  document.getElementById('copilotTasks').innerHTML=tasks.length?tasks.map(t=>`<div class="copilot-task ${escapeHtmlIndex(t.priority||'next')}"><span class="copilot-priority">${escapeHtmlIndex(t.priority||'next')}</span><div><strong>${escapeHtmlIndex(t.action||'')}</strong><small>${escapeHtmlIndex(t.reason||'')}</small></div></div>`).join(''):'<div class="radar-empty">No tasks yet. Save a bursary or complete your profile to give Copilot more context.</div>';
+}
+async function loadCopilot(){
+  const status=document.getElementById('copilotStatus');
+  if(!currentStudent){document.getElementById('copilotHeadline').textContent='Log in to activate your Copilot.';document.getElementById('copilotSummary').textContent='Fundisa will use your funding journey to build a short action plan.';document.getElementById('copilotTasks').innerHTML='<div class="radar-empty">Log in to build a personalised funding plan.</div>';return;}
+  status.textContent='Building your plan…';
+  try{const d=await studentApi('/api/student/copilot');renderCopilotPlan(d.plan||{});status.textContent=d.ai?'AI Copilot refreshed from your current funding context.':'Plan refreshed using your current funding context.';}catch(e){status.textContent='We could not build your plan right now.';}
+}
+function initCopilot(){document.getElementById('runCopilot')?.addEventListener('click',loadCopilot);}
+
+async function loadNotificationPreferences(){
+  if(!currentStudent) return;
+  try{
+    const d=await studentApi('/api/student/notification-settings'); const p=d.preferences||{};
+    document.getElementById('prefDeadlines').checked=!!p.email_deadlines; document.getElementById('prefMatches').checked=!!p.email_new_matches; document.getElementById('prefUpdates').checked=!!p.email_updates;
+  }catch(e){ console.warn('Notification preferences unavailable',e.message); }
+}
+async function loadStudentNotifications(){
+  const list=document.getElementById('notificationList'), summary=document.getElementById('notificationSummary'); if(!currentStudent){summary.textContent='Log in to see your funding alerts.'; list.innerHTML='<p class="radar-empty">Log in to unlock personal deadline and funding alerts.</p>'; return;}
+  try{ const d=await studentApi('/api/student/notifications'); const rows=d.notifications||[]; const unread=rows.filter(x=>!x.read_at).length; summary.textContent=unread?`${unread} unread alert${unread===1?'':'s'} waiting for you.`:'You are all caught up.'; list.innerHTML=rows.length?rows.map(n=>`<div class="notification-item ${n.read_at?'':'unread'}"><strong>${n.title}</strong><small>${n.message} · ${new Date(n.created_at.replace(' ','T')+'Z').toLocaleString()}</small></div>`).join(''):'<p class="radar-empty">No alerts yet. Save a bursary and Fundisa will watch its deadline.</p>'; }catch(e){list.innerHTML='<p class="radar-empty">We could not load alerts right now.</p>';}
+}
+function initNotifications(){
+  document.getElementById('saveNotificationPrefs')?.addEventListener('click',async()=>{if(!currentStudent){showToast('Log in first','error');return;} try{await studentApi('/api/student/notification-settings',{method:'PUT',body:JSON.stringify({email_deadlines:document.getElementById('prefDeadlines').checked,email_new_matches:document.getElementById('prefMatches').checked,email_updates:document.getElementById('prefUpdates').checked})});showToast('Alert preferences saved.');}catch(e){showToast(e.message,'error');}});
+  document.getElementById('markNotificationsRead')?.addEventListener('click',async()=>{if(!currentStudent)return;try{await studentApi('/api/student/notifications/read',{method:'POST'});loadStudentNotifications();}catch{}});
+  document.getElementById('refreshNotifications')?.addEventListener('click',loadStudentNotifications);
+}
+
+function setApiStatus(connected){
+  const pill = document.getElementById('apiStatus');
+  pill.textContent = connected ? 'backend connected' : 'backend offline';
+  pill.className = 'status-pill ' + (connected ? 'connected' : 'offline');
+}
+
+function initTicker(){
+  const track = document.getElementById('tickerTrack');
+  const items = BURSARIES.filter(b => b.status === 'open').map(b =>
+    `<div class="ticker-item"><span class="ticker-dot" aria-hidden="true"></span>${b.name} • ${b.deadline}</div>`
+  ).join('');
+  track.innerHTML = items + items;
+}
+
+function initFilters(){
+  const row = document.getElementById('filterRow');
+  row.innerHTML = ALL_FIELDS.map(f =>
+    `<button class="chip${f===activeField?' active':''}" data-field="${f}">${f}</button>`
+  ).join('');
+  row.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      activeField = chip.dataset.field;
+      initFilters();
+      renderGrid();
+    });
+  });
+}
+
+function skeletonCardHTML(){
+  return `
+    <div class="skel-card">
+      <span class="skel skel-line w-40" style="height:9px;"></span>
+      <span class="skel skel-line tall w-80"></span>
+      <span class="skel skel-line w-100"></span>
+      <span class="skel skel-line w-60" style="margin-bottom:0;"></span>
+    </div>`;
+}
+
+function renderSkeletons(gridId, count){
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = Array.from({ length: count }).map(skeletonCardHTML).join('');
+}
+
+function countdownBadgeHTML(deadlineDate){
+  if (!deadlineDate) return '';
+  const target = new Date(deadlineDate + 'T23:59:59');
+  if (isNaN(target.getTime())) return '';
+  const now = new Date();
+  const daysLeft = Math.ceil((target - now) / 86400000);
+  if (daysLeft < 0) return `<span class="countdown-badge past">Closed</span>`;
+  if (daysLeft === 0) return `<span class="countdown-badge today">Closes today</span>`;
+  if (daysLeft <= 7) return `<span class="countdown-badge soon">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</span>`;
+  return `<span class="countdown-badge normal">${daysLeft} days left</span>`;
+}
+
+const SHARE_SVG = `<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"/><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"/></svg>`;
+const STAR_SVG = `<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>`;
+
+function bcardHTML(b, matchPct){
+  const isUrgent = b.deadline.toLowerCase().includes('closes') || b.deadline.toLowerCase().includes('30 september');
+  const deadlineClass = isUrgent ? 'urgent' : 'open';
+  const isSaved = savedBursaryIds.has(b.id);
+  return `
+    <div class="bcard" style="position:relative;">
+      <button class="save-btn${isSaved ? ' saved' : ''}" data-save-id="${b.id}" aria-label="${isSaved ? 'Remove from saved' : 'Save for later'}" title="${isSaved ? 'Saved' : 'Save for later'}">${STAR_SVG}</button>
+      ${matchPct ? `<div class="match-seal"><b>${matchPct}%</b><span>MATCH</span></div>` : ''}
+      <div class="bcard-top" style="padding-left:44px;">
+        <p class="bcard-provider">${b.provider}</p>
+        <h3 class="bcard-name">${b.name}</h3>
+        ${b.last_verified_at || b.last_source_sync_at ? `<p class="bcard-freshness">Fundisa check: ${escapeHtmlIndex((b.last_verified_at || b.last_source_sync_at).replace("T", " ").slice(0, 16))}</p>` : ""}
+        <p class="bcard-desc">${b.description || ''}</p>
+        <div class="bcard-tags">${b.fields.map(f=>`<span class="tag">${f}</span>`).join('')}</div>
+        ${b.eligibility ? `<details class="plain-language"><summary>Explain the requirements simply</summary><p>${escapeHtmlIndex(b.eligibility)} Always confirm the full criteria on the provider site.</p></details>` : ''}
+      </div>
+      <div class="perforation" aria-hidden="true"></div>
+      <div class="bcard-bottom">
+        <span class="deadline ${deadlineClass}">${b.deadline}${countdownBadgeHTML(b.deadline_date)}</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="share-btn" data-share-id="${b.id}" aria-label="Share this bursary" title="Share">${SHARE_SVG}</button>
+          <a class="bcard-link" href="${b.url}" target="_blank" rel="noopener">Learn more ↗</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+// AUTOMATIC DEADLINE CHECKING & EXPIRY FILTERING
+function isBursaryActive(b) {
+  if (b.status === 'closed') return false;
+  if (!b.deadline_date) return true;
+  const target = new Date(b.deadline_date + 'T23:59:59').getTime();
+  if (isNaN(target)) return true;
+  return target >= Date.now(); // IF deadline passed, filter out automatically
+}
+
+function daysUntil(deadlineDate){
+  if(!deadlineDate) return Infinity;
+  const target = new Date(deadlineDate + 'T23:59:59');
+  if(isNaN(target.getTime())) return Infinity;
+  return Math.ceil((target - new Date()) / 86400000);
+}
+
+function normalizedField(value){
+  return String(value || '').trim().toLowerCase().replace(/&/g,'and').replace(/[\-_/]/g,' ');
+}
+function fieldMatches(b, field){
+  const wanted = normalizedField(field);
+  if(!wanted) return false;
+  return (b.fields || []).some(raw => {
+    const f = normalizedField(raw);
+    return f === wanted || f === 'all fields' || f.includes(wanted) || wanted.includes(f);
+  });
+}
+function fitScore(b, field, urgency){
+  const fieldMatch = fieldMatches(b, field);
+  const days = daysUntil(b.deadline_date);
+  let score = fieldMatch ? 78 : 42;
+  if(days !== Infinity && days >= 0){
+    if(urgency === 'soon') score += days <= 7 ? 17 : days <= 14 ? 10 : 2;
+    else score += days <= 14 ? 8 : days <= 30 ? 5 : 2;
+  }
+  if(currentStudent?.study_year && /postgraduate|masters|honours|phd/i.test(currentStudent.study_year) && /postgraduate|honours|masters|phd/i.test(`${b.name} ${b.description} ${b.eligibility}`)) score += 3;
+  return Math.min(98, score);
+}
+function fitReason(b, field, urgency){
+  const days = daysUntil(b.deadline_date);
+  const parts = [];
+  if(fieldMatches(b, field)) parts.push(`Your ${field} field is covered by this opportunity.`);
+  else parts.push('This opportunity has a broader or related field, so check the full eligibility before applying.');
+  if(currentStudent?.study_year) parts.push(`Your profile is set to ${currentStudent.study_year}.`);
+  if(days !== Infinity && days >= 0 && days <= 14) parts.push(`It closes in ${days === 0 ? 'less than a day' : days + ' day' + (days === 1 ? '' : 's')}.`);
+  if(urgency === 'soon' && days > 14) parts.push('It is less urgent than opportunities closing sooner.');
+  return parts.join(' ');
+}
+
+function renderDeadlineRescue(){
+  const el = document.getElementById('deadlineRescue');
+  if(!el) return;
+  const active = BURSARIES.filter(isBursaryActive).filter(b => { const d = daysUntil(b.deadline_date); return d !== Infinity && d >= 0 && d <= 14; })
+    .sort((a,b) => daysUntil(a.deadline_date)-daysUntil(b.deadline_date));
+  if(!active.length){
+    el.innerHTML = '<p class="radar-empty">No listings are currently closing within 14 days. Save a bursary and Fundisa will keep it visible in your Funding Desk.</p>';
+    return;
+  }
+  el.innerHTML = active.slice(0,4).map(b => {
+    const d = daysUntil(b.deadline_date);
+    const isSaved = savedBursaryIds.has(b.id);
+    return `<div class="rescue-item"><div class="rescue-item-top"><div><strong>${b.name}</strong><small>${b.provider} · ${b.deadline}</small></div><span class="radar-badge">${d === 0 ? 'TODAY' : d + 'D LEFT'}</span></div><div class="rescue-actions"><button class="primary" type="button" data-rescue-save="${b.id}">${isSaved ? 'Saved' : 'Save for later'}</button><a href="${b.url || '#'}" target="_blank" rel="noopener">Apply / view ↗</a></div></div>`;
+  }).join('');
+}
+
+function renderFundingDesk(){
+  const el = document.getElementById('fundingDesk');
+  if(!el) return;
+  const saved = [...savedBursaryIds].map(id => BURSARIES.find(b => b.id === id)).filter(Boolean).filter(isBursaryActive);
+  if(!saved.length){
+    el.innerHTML = '<p class="radar-empty">Save bursaries with the star icon and they will appear here. Think of this as your personal queue for opportunities you do not want to lose track of.</p>';
+    return;
+  }
+  el.innerHTML = saved.map(b => {
+    const key = `fundisa-application-status-${b.id}`;
+    const status = localStorage.getItem(key) || 'Saved';
+    const d = daysUntil(b.deadline_date);
+    const deadline = d === Infinity ? b.deadline : (d < 0 ? 'Closed' : d === 0 ? 'Closes today' : `${d} day${d===1?'':'s'} left`);
+    return `<div class="desk-row"><div><strong>${b.name}</strong><small>${b.provider} · ${deadline}</small>${status==='Unsuccessful' ? `<div class="rescue-actions"><button class="primary" type="button" data-alternative-id="${b.id}">Find alternatives</button></div>` : ''}</div><select data-desk-status="${b.id}" aria-label="Application status for ${b.name}"><option ${status==='Saved'?'selected':''}>Saved</option><option ${status==='Applied'?'selected':''}>Applied</option><option ${status==='Unsuccessful'?'selected':''}>Unsuccessful</option></select></div>`;
+  }).join('');
+}
+
+
+let readinessBursaryId='';
+function renderReadinessOpportunities(){
+  const el=document.getElementById('readinessOpportunities'); if(!el)return;
+  if(!currentStudent){el.innerHTML='<p class="radar-empty">Log in to track application readiness.</p>';return;}
+  const saved=[...savedBursaryIds].map(id=>BURSARIES.find(b=>b.id===id)).filter(Boolean).filter(isBursaryActive);
+  if(!saved.length){el.innerHTML='<p class="radar-empty">Save a bursary with the star icon and it will appear here.</p>';return;}
+  el.innerHTML=saved.map(b=>`<div class="readiness-opportunity"><div><strong>${escapeHtmlIndex(b.name)}</strong><div class="readiness-note">${escapeHtmlIndex(b.provider||'')} · ${escapeHtmlIndex(b.deadline||'')}</div></div><button type="button" data-readiness-id="${escapeHtmlIndex(b.id)}">Track</button></div>`).join('');
+}
+async function loadReadiness(bursaryId){
+  if(!currentStudent){showToast('Log in first','error');return;}
+  const b=BURSARIES.find(x=>x.id===bursaryId); if(!b)return;
+  readinessBursaryId=bursaryId;
+  document.getElementById('readinessBursaryName').textContent=b.name;
+  document.getElementById('readinessBursaryMeta').textContent=`${b.provider} · ${b.deadline||'Check official deadline'}`;
+  document.getElementById('readinessTasks').innerHTML='<p class="radar-empty">Loading your checklist…</p>';
+  try{
+    const d=await studentApi(`/api/student/application-readiness?bursary_id=${encodeURIComponent(bursaryId)}`);
+    renderReadinessTasks(d.tasks||[],d.readiness||0);
+  }catch(e){document.getElementById('readinessTasks').innerHTML='<p class="radar-empty">We could not load this checklist right now.</p>';}
+}
+function renderReadinessTasks(tasks,pct){
+  document.getElementById('readinessPercent').textContent=`${pct}%`;
+  document.getElementById('readinessBar').style.width=`${pct}%`;
+  document.getElementById('readinessTasks').innerHTML=tasks.length?tasks.map(t=>`<label class="readiness-task ${t.done?'done':''}"><input type="checkbox" data-readiness-task="${escapeHtmlIndex(t.task_key)}" ${t.done?'checked':''}><span><strong>${escapeHtmlIndex(t.label)}</strong><small>${t.done?'Marked complete':'Tick this when you are ready'}</small></span></label>`).join(''):'<p class="radar-empty">No checklist items yet.</p>';
+}
+function initReadiness(){
+  document.getElementById('readinessOpportunities')?.addEventListener('click',e=>{const btn=e.target.closest('[data-readiness-id]');if(!btn)return;loadReadiness(btn.dataset.readinessId);document.getElementById('readiness').scrollIntoView({behavior:'smooth',block:'start'});});
+  document.getElementById('readinessTasks')?.addEventListener('change',async e=>{const input=e.target.closest('[data-readiness-task]');if(!input||!readinessBursaryId)return;input.disabled=true;try{const d=await studentApi('/api/student/application-readiness',{method:'PUT',body:JSON.stringify({bursary_id:readinessBursaryId,task_key:input.dataset.readinessTask,done:input.checked})});renderReadinessTasks(d.tasks||[],d.readiness||0);}catch(err){input.checked=!input.checked;showToast(err.message,'error');}finally{input.disabled=false;}});
+}
+
+function initRadar(){
+  const fieldSelect = document.getElementById('radarField');
+  if(!fieldSelect) return;
+  fieldSelect.innerHTML = '<option value="">Choose your field</option>' + ALL_FIELDS.filter(f => f !== 'All').map(f => `<option value="${f}">${f}</option>`).join('');
+  const savedProfile = JSON.parse(localStorage.getItem('fundisa-radar-profile') || 'null');
+  const accountProfile = currentStudent?.study_field ? {field: currentStudent.study_field, urgency: savedProfile?.urgency || 'any'} : savedProfile;
+  if(accountProfile){
+    fieldSelect.value = accountProfile.field || '';
+    document.getElementById('radarUrgency').value = accountProfile.urgency || 'any';
+    renderRadarResults(accountProfile.field, accountProfile.urgency);
+  } else {
+    updateRadarStats();
+  }
+  document.getElementById('radarForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const field = fieldSelect.value;
+    const urgency = document.getElementById('radarUrgency').value;
+    if(!field){ showToast('Choose your field first', 'error'); return; }
+    localStorage.setItem('fundisa-radar-profile', JSON.stringify({ field, urgency }));
+    renderRadarResults(field, urgency);
+  });
+  ['gapCost','gapFunding'].forEach(id => document.getElementById(id).addEventListener('input', updateGap));
+  document.getElementById('deadlineRescue').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-rescue-save]');
+    if(btn){ toggleSaved(btn.dataset.rescueSave); renderDeadlineRescue(); renderFundingDesk(); }
+  });
+  document.getElementById('fundingDesk').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-alternative-id]');
+    if(!btn) return;
+    const b = BURSARIES.find(x => x.id === btn.dataset.alternativeId);
+    const field = b?.fields?.find(f => String(f).toLowerCase() !== 'all fields') || b?.fields?.[0];
+    if(field){
+      localStorage.setItem('fundisa-radar-profile', JSON.stringify({ field, urgency:'any' }));
+      document.getElementById('radarField').value = field;
+      document.getElementById('radarUrgency').value = 'any';
+      renderRadarResults(field, 'any');
+    }
+    document.getElementById('radar').scrollIntoView({ behavior:'smooth', block:'start' });
+    showToast('Fundisa found a fresh route forward');
+  });
+  document.getElementById('fundingDesk').addEventListener('change', (e) => {
+    const select = e.target.closest('[data-desk-status]');
+    if(!select) return;
+    localStorage.setItem(`fundisa-application-status-${select.dataset.deskStatus}`, select.value);
+    if(currentStudent) studentApi('/api/student/saved',{method:'POST',body:JSON.stringify({bursary_id:select.dataset.deskStatus,status:select.value})}).catch(err=>console.warn('Account status sync skipped:',err.message));
+    showToast(`Status updated to ${select.value}`);
+    renderFundingDesk();
+  });
+}
+
+function updateRadarStats(){
+  const active = BURSARIES.filter(isBursaryActive);
+  const closing = active.filter(b => { const d = daysUntil(b.deadline_date); return d !== Infinity && d >= 0 && d <= 14; });
+  document.getElementById('radarActiveCount').textContent = active.length;
+  document.getElementById('radarClosingCount').textContent = closing.length;
+}
+
+const PRIVATE_INSTITUTIONS = [
+  'Richfield Graduate Institute of Technology','Rosebank College','IIE Varsity College','IIE Vega','IIE MSA','Boston City Campus','CTU Training Solutions','Eduvos','STADIO Higher Education','MANCOSA','Milpark Education','Regent Business School','Regenesys Education','Rostec Technical FET College'
+];
+
+function privateOpportunityEligible(b){
+  const text = `${b.description||''} ${b.eligibility||''} ${b.name||''} ${b.provider||''}`.toLowerCase();
+  return !/(public universities|public university|public institution|tvET colleges only|tvet colleges only)/i.test(text);
+}
+function renderPrivateFunding(){
+  const inst = document.getElementById('privateInstitution')?.value || 'Any private institution';
+  const field = document.getElementById('privateField')?.value || 'All fields';
+  const resultsEl = document.getElementById('privateResults');
+  const countEl = document.getElementById('privateResultCount');
+  if(!resultsEl || !countEl) return;
+  const source = BURSARIES.filter(isBursaryActive).filter(privateOpportunityEligible);
+  const matches = source.filter(b => field === 'All fields' || (Array.isArray(b.fields) && (b.fields.includes(field) || b.fields.includes('All fields'))));
+  countEl.textContent = matches.length;
+  const headline = document.getElementById('privateHubHeadline');
+  if(headline) headline.textContent = inst === 'Any private institution' ? 'Find funding for private study.' : `Funding search for ${inst}.`;
+  if(!matches.length){resultsEl.innerHTML='<p class="radar-empty">No potential matches are currently visible for this field. Try All fields or check the full catalogue for newly added opportunities.</p>';return;}
+  resultsEl.innerHTML = matches.slice(0,8).map(b=>`<div class="private-result"><strong>${escapeHtmlIndex(b.name)}</strong><small>${escapeHtmlIndex(b.provider)} · ${escapeHtmlIndex(b.description||'Potentially relevant funding opportunity.')}</small><a href="${b.url}" target="_blank" rel="noopener">Check provider requirements ↗</a></div>`).join('');
+}
+function initPrivateFunding(){
+  const field=document.getElementById('privateField');
+  if(field){
+    const fields = [...new Set(BURSARIES.flatMap(b=>Array.isArray(b.fields)?b.fields:[]))].filter(f=>f && f!=='All fields').sort();
+    field.innerHTML='<option value="All fields">All fields</option>'+fields.map(f=>`<option>${escapeHtmlIndex(f)}</option>`).join('');
+    field.addEventListener('change',renderPrivateFunding);
+  }
+  document.getElementById('privateInstitution')?.addEventListener('change',renderPrivateFunding);
+  const chips=document.getElementById('privateInstitutionChips');
+  if(chips){
+    chips.innerHTML=PRIVATE_INSTITUTIONS.slice(0,14).map(name=>`<button class="private-institution" type="button" data-private-inst="${escapeHtmlIndex(name)}">${escapeHtmlIndex(name.replace('Richfield Graduate Institute of Technology','Richfield').replace('Rostec Technical FET College','Rostec').replace('IIE Varsity College','Varsity College').replace('IIE Vega','Vega').replace('IIE MSA','MSA').replace('Boston City Campus','Boston City Campus').replace('STADIO Higher Education','STADIO'))}</button>`).join('');
+    chips.querySelectorAll('[data-private-inst]').forEach(btn=>btn.addEventListener('click',()=>{document.getElementById('privateInstitution').value=btn.dataset.privateInst;chips.querySelectorAll('.private-institution').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderPrivateFunding();}));
+  }
+  document.getElementById('privateBrowseAll')?.addEventListener('click',()=>document.getElementById('browse')?.scrollIntoView({behavior:'smooth'}));
+  renderPrivateFunding();
+}
+
+function renderRadarResults(field, urgency){
+  updateRadarStats();
+  const results = BURSARIES.filter(isBursaryActive)
+    .map(b => ({ b, score: fitScore(b, field, urgency) }))
+    .sort((a,b) => b.score - a.score || daysUntil(a.b.deadline_date) - daysUntil(b.b.deadline_date))
+    .slice(0, 5);
+  const best = results[0]?.score || 0;
+  document.getElementById('radarScore').innerHTML = `${best}%<span>FUNDISA FIT</span>`;
+  document.getElementById('radarMeterFill').style.width = best + '%';
+  document.getElementById('radarHeadline').textContent = best ? `Your strongest matches for ${field}` : 'No matches yet';
+  document.getElementById('radarResults').innerHTML = results.length ? results.map(({b, score}) => `<div class="radar-item"><div><strong>${b.name}</strong><small>${b.provider} · ${fitReason(b, field, urgency)}</small></div><span class="radar-badge">${score}% FIT</span></div>`).join('') : '<p class="radar-empty">No open bursaries matched your current profile. Try another field or use the full catalogue.</p>';
+}
+
+function updateGap(){
+  const cost = Number(document.getElementById('gapCost').value);
+  const funding = Number(document.getElementById('gapFunding').value);
+  const out = document.getElementById('gapResult');
+  if(!cost || funding < 0){ out.textContent = 'Enter both amounts to calculate your estimated funding gap.'; return; }
+  const gap = Math.max(0, cost - funding);
+  out.innerHTML = gap > 0 ? `Estimated gap: <b>${formatRand(gap)}</b>` : `You currently show no funding gap. <b>${formatRand(Math.max(0, funding - cost))}</b> remains after your estimated costs.`;
+}
+
+function renderGrid(){
+  const grid = document.getElementById('bursaryGrid');
+  const term = searchTerm.trim().toLowerCase();
+
+  // Filters out expired bursaries in real time
+  const activeBursaries = BURSARIES.filter(isBursaryActive);
+
+  const list = activeBursaries.filter(b => {
+    const matchesField = activeField === 'All' || b.fields.includes(activeField);
+    const matchesSearch = !term || b.name.toLowerCase().includes(term) || b.provider.toLowerCase().includes(term);
+    const matchesSaved = !showSavedOnly || savedBursaryIds.has(b.id);
+    return matchesField && matchesSearch && matchesSaved;
+  });
+
+  const savedCountEl = document.getElementById('savedCount');
+  if (savedCountEl) savedCountEl.textContent = savedBursaryIds.size;
+
+  if(list.length === 0){
+    grid.innerHTML = `<p style="color:var(--text-muted); font-size:14px;">${showSavedOnly ? "You haven't saved any bursaries yet • tap the star on a card to save it." : 'No open bursaries match that search • try a different field or term.'}</p>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(b => bcardHTML(b)).join('');
+  requestAnimationFrame(() => {
+    grid.querySelectorAll('.bcard').forEach((el, i) => {
+      setTimeout(() => el.classList.add('show'), i * 40);
+    });
+  });
+}
+
+function showToast(message, type = 'success'){
+  const stack = document.getElementById('toastStack');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'error' ? ' error' : '');
+  el.textContent = message;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+function debounce(fn, wait){
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+function toggleSaved(id){
+  if (savedBursaryIds.has(id)) {
+    savedBursaryIds.delete(id);
+    showToast('Removed from saved bursaries');
+  } else {
+    savedBursaryIds.add(id);
+    showToast('Saved • find it under "Saved only"');
+  }
+  persistSavedIds();
+  if(currentStudent){
+    const saved = savedBursaryIds.has(id);
+    studentApi(saved ? '/api/student/saved' : `/api/student/saved/${encodeURIComponent(id)}`, { method: saved ? 'POST' : 'DELETE', ...(saved ? { body: JSON.stringify({ bursary_id:id, status:'Saved' }) } : {}) }).catch(err => console.warn('Account save sync skipped:', err.message));
+  }
+  renderGrid();
+  renderDeadlineRescue();
+  renderFundingDesk();
+}
+
+async function shareBursary(id){
+  const b = BURSARIES.find(x => x.id === id);
+  if (!b) return;
+  const shareData = { title: `${b.name} • Fundisa`, text: `${b.name} (${b.provider}) • ${b.deadline}`, url: window.location.href.split('#')[0] + '#browse' };
+  if (navigator.share) {
+    try { await navigator.share(shareData); } catch {}
+  } else {
+    try {
+      await navigator.clipboard.writeText(`${shareData.text} • ${shareData.url}`);
+      showToast('Link copied to clipboard');
+    } catch {
+      showToast("Couldn't copy • try again", 'error');
+    }
+  }
+}
+
+document.getElementById('bursaryGrid').addEventListener('click', (e) => {
+  const saveBtn = e.target.closest('[data-save-id]');
+  if (saveBtn) { toggleSaved(saveBtn.dataset.saveId); return; }
+  const shareBtn = e.target.closest('[data-share-id]');
+  if (shareBtn) { shareBursary(shareBtn.dataset.shareId); }
+});
+
+function formatRand(n){
+  return 'R' + Number(n).toLocaleString('en-ZA');
+}
+
+function campaignCardHTML(c){
+  const pct = c.goal_amount > 0 ? Math.min(100, Math.round((c.raised_amount / c.goal_amount) * 100)) : 0;
+  const statusLabel = c.status === 'active' ? 'Active' : c.status === 'closed' ? 'Fully funded / closed' : c.status;
+  const deadlineClass = c.status === 'active' ? 'open' : 'urgent';
+  return `
+    <div class="bcard show">
+      <div class="bcard-top">
+        <p class="bcard-provider">${escapeHtmlIndex(c.student_name)}${c.field ? ' · ' + escapeHtmlIndex(c.field) : ''}</p>
+        <h3 class="bcard-name">${escapeHtmlIndex(c.title)}</h3>
+        <p class="bcard-desc">${escapeHtmlIndex(c.story)}</p>
+        <div class="progress-track"><div class="progress-fill" data-target-pct="${pct}" style="width:0%"></div></div>
+        <div class="campaign-meta"><span><b>${formatRand(c.raised_amount)}</b> raised</span><span>Goal: ${formatRand(c.goal_amount)}</span></div>
+      </div>
+      <div class="perforation" aria-hidden="true"></div>
+      <div class="bcard-bottom">
+        <span class="deadline ${deadlineClass}">${statusLabel}</span>
+        <a class="bcard-link" href="${c.external_url}" target="_blank" rel="noopener">Support this campaign ↗</a>
+      </div>
+    </div>`;
+}
+
+function escapeHtmlIndex(str){
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+async function loadCampaigns(){
+  const grid = document.getElementById('campaignGrid');
+  try {
+    const data = await api('/api/campaigns');
+    const campaigns = data.campaigns || [];
+    if(campaigns.length === 0){
+      grid.innerHTML = `<p style="color:var(--text-muted); font-size:14px;">No active fundraisers right now • check back soon, or if you're a student who needs one, get in touch with the Fundisa team.</p>`;
+      return;
+    }
+    grid.innerHTML = campaigns.map(campaignCardHTML).join('');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        grid.querySelectorAll('.progress-fill').forEach(el => {
+          el.style.width = el.dataset.targetPct + '%';
+        });
+      });
+    });
+  } catch (err) {
+    grid.innerHTML = `<p style="color:var(--coral-dark); font-size:14px;">Couldn't load fundraisers right now • try refreshing in a moment.</p>`;
+  }
+}
+
+async function handleLetterSubmit(e){
+  e.preventDefault();
+  const name = document.getElementById('letterName').value.trim();
+  const fieldOfStudy = document.getElementById('letterField').value.trim();
+  const targetBursary = document.getElementById('letterTarget').value.trim();
+  const points = document.getElementById('letterPoints').value.trim();
+  const errorEl = document.getElementById('letterError');
+  const loadingEl = document.getElementById('letterLoading');
+  const outputEl = document.getElementById('letterOutput');
+  const submitBtn = document.getElementById('letterSubmit');
+
+  errorEl.style.display = 'none';
+  outputEl.style.display = 'none';
+
+  if(!name || !points){
+    errorEl.textContent = 'Add your name and at least a few things about yourself first.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  loadingEl.style.display = 'flex';
+  submitBtn.disabled = true;
+
+  try {
+    const data = await api('/api/letter-assistant', {
+      method: 'POST',
+      body: JSON.stringify({ name, fieldOfStudy, targetBursary, points }),
+      timeoutMs: 45000
+    });
+    document.getElementById('letterText').textContent = data.letter || '';
+    outputEl.style.display = 'block';
+  } catch (err) {
+    errorEl.textContent = err.message || "Couldn't draft that just now • please try again.";
+    errorEl.style.display = 'block';
+  } finally {
+    loadingEl.style.display = 'none';
+    submitBtn.disabled = false;
+  }
+}
+
+function initLetterAssistant(){
+  document.getElementById('letterForm').addEventListener('submit', handleLetterSubmit);
+  document.getElementById('letterCopy').addEventListener('click', () => {
+    const text = document.getElementById('letterText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('letterCopy');
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = original; }, 1800);
+    });
+  });
+
+  function downloadBlob(filename, content, mimeType){
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('letterDownloadTxt').addEventListener('click', () => {
+    const text = document.getElementById('letterText').textContent;
+    if (!text) return;
+    downloadBlob('motivational-letter.txt', text, 'text/plain;charset=utf-8');
+    showToast('Letter downloaded');
+  });
+
+  document.getElementById('letterDownloadDoc').addEventListener('click', () => {
+    const text = document.getElementById('letterText').textContent;
+    if (!text) return;
+    const paragraphs = text.split(/\n+/).filter(Boolean).map(p => `<p>${p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`).join('');
+    const docHTML = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset="utf-8"><title>Motivational Letter</title></head>
+<body style="font-family:Calibri,sans-serif; font-size:12pt; line-height:1.5;">${paragraphs}</body></html>`;
+    downloadBlob('motivational-letter.doc', docHTML, 'application/msword');
+    showToast('Letter downloaded');
+  });
+}
+
+function initQuotes(){
+  let i = 0;
+  const textEl = document.getElementById('quoteText');
+  const citeEl = document.getElementById('quoteCite');
+  setInterval(() => {
+    i = (i + 1) % QUOTES.length;
+    textEl.style.opacity = 0;
+    citeEl.style.opacity = 0;
+    setTimeout(() => {
+      textEl.textContent = `"${QUOTES[i].text}"`;
+      citeEl.textContent = `• ${QUOTES[i].cite}`;
+      textEl.style.opacity = 1;
+      citeEl.style.opacity = 1;
+    }, 400);
+  }, 7000);
+}
+
+function initNotify(){
+  const select = document.getElementById('notifyField');
+  ALL_FIELDS.filter(f => f !== 'All').forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f; opt.textContent = f;
+    select.appendChild(opt);
+  });
+
+  document.getElementById('notifyBtn').addEventListener('click', async () => {
+    const email = document.getElementById('notifyEmail').value.trim();
+    const field = document.getElementById('notifyField').value;
+    const msg = document.getElementById('notifyMsg');
+    const btn = document.getElementById('notifyBtn');
+
+    if(!email || !email.includes('@')){
+      msg.style.color = 'var(--coral-dark)';
+      msg.textContent = 'Enter a valid email first.';
+      msg.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    try {
+      const data = await api('/api/notify', { method: 'POST', body: JSON.stringify({ email, field }) });
+      msg.style.color = 'var(--green-dark)';
+      msg.textContent = data.welcomeSent ? 'Thank you for submitting your email. Fundisa will update you about bursaries • check your inbox for confirmation.' : (data.message || 'Thank you for submitting your email. Fundisa will update you about bursaries.');
+      document.getElementById('notifyEmail').value = '';
+    } catch (err) {
+      msg.style.color = 'var(--coral-dark)';
+      msg.textContent = "Couldn't save that just now • try again in a moment.";
+    } finally {
+      msg.style.display = 'block';
+      btn.disabled = false;
+    }
+  });
+}
+
+
+const chatbotHistory = [];
+function appendChatMessage(role, text, sources = []) {
+  const wrap = document.getElementById('chatbotMessages');
+  const el = document.createElement('div');
+  el.className = `chat-msg ${role === 'user' ? 'user' : 'bot'}`;
+  el.textContent = text;
+  if (sources.length && role !== 'user') {
+    const s = document.createElement('div');
+    s.className = 'chat-sources';
+    s.textContent = 'Sources: ';
+    sources.forEach((src, i) => {
+      const a = document.createElement('a');
+      a.href = src.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = src.title || src.url;
+      s.appendChild(a); if (i < sources.length - 1) s.append(' · ');
+    });
+    el.appendChild(s);
+  }
+  wrap.appendChild(el);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+async function handleChatbotSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById('chatbotInput');
+  const send = document.getElementById('chatbotSend');
+  const text = input.value.trim();
+  if (!text) return;
+  appendChatMessage('user', text);
+  chatbotHistory.push({ role: 'user', content: text });
+  input.value = '';
+  send.disabled = true;
+  const loading = 'Thinking…';
+  appendChatMessage('assistant', loading);
+  const last = document.querySelector('#chatbotMessages .chat-msg.bot:last-child');
+  try {
+    const data = await api('/api/chat', { method: 'POST', body: JSON.stringify({ messages: chatbotHistory }) });
+    if (last) last.remove();
+    appendChatMessage('assistant', data.reply || 'I could not find an answer just now.', data.sources || []);
+    chatbotHistory.push({ role: 'assistant', content: data.reply || '' });
+  } catch (err) {
+    if (last) last.textContent = 'I’m having trouble connecting right now. Please try again in a moment.';
+  } finally { send.disabled = false; input.focus(); }
+}
+
+document.getElementById('chatbotForm').addEventListener('submit', handleChatbotSubmit);
+document.getElementById('chatbotLauncher').addEventListener('click', () => {
+  const panel = document.getElementById('chatbotPanel');
+  const open = !panel.classList.contains('open');
+  panel.classList.toggle('open', open);
+  document.getElementById('chatbotLauncher').setAttribute('aria-expanded', String(open));
+  if (open) document.getElementById('chatbotInput').focus();
+});
+document.getElementById('chatbotClose').addEventListener('click', () => {
+  document.getElementById('chatbotPanel').classList.remove('open');
+  document.getElementById('chatbotLauncher').setAttribute('aria-expanded', 'false');
+});
+
+async function handleAISubmit(e){
+  e.preventDefault();
+  const input = document.getElementById('aiInput');
+  const query = input.value.trim();
+  const errorEl = document.getElementById('aiError');
+  const loadingEl = document.getElementById('aiLoading');
+  const resultsEl = document.getElementById('aiResults');
+  const submitBtn = document.getElementById('aiSubmit');
+
+  errorEl.style.display = 'none';
+  resultsEl.innerHTML = '';
+
+  if(!query){
+    errorEl.textContent = "Tell the assistant what you're studying first.";
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  loadingEl.style.display = 'flex';
+  submitBtn.disabled = true;
+
+  try {
+    const data = await api('/api/assistant', { method: 'POST', body: JSON.stringify({ query }) });
+    const matches = data.matches || [];
+
+    if(matches.length === 0){
+      resultsEl.innerHTML = `<p style="color:#B9C0D6; font-size:14px;">No strong matches in the current catalogue for that field yet • try rephrasing, or browse the full list above.</p>`;
+    } else {
+      resultsEl.innerHTML = matches.map(m => `
+        <div class="ai-result">
+          <div class="match-seal" style="position:absolute; top:14px; right:14px;"><b>${m.matchPct}%</b><span>MATCH</span></div>
+          <p class="ai-result-name">${m.bursary.name}</p>
+          <p class="ai-result-why">${m.why}</p>
+        </div>`).join('');
+    }
+  } catch (err) {
+    errorEl.textContent = err.message || "Couldn't reach the assistant just now • please try again in a moment.";
+    errorEl.style.display = 'block';
+  } finally {
+    loadingEl.style.display = 'none';
+    submitBtn.disabled = false;
+  }
+}
+
+function animateCountUp(el, target, duration = 900){
+  if (target === 0) { el.textContent = '0'; return; }
+  const start = performance.now();
+  function tick(now){
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
+}
+
+function initScrollReveal(){
+  const targets = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(el => el.classList.add('visible'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(el => observer.observe(el));
+}
+
+let fieldChartInstance = null;
+function renderFieldChart(){
+  const panel = document.getElementById('chartPanel');
+  const canvas = document.getElementById('fieldChart');
+  if (typeof Chart === 'undefined' || !canvas) return;
+
+  const counts = {};
+  BURSARIES.filter(isBursaryActive).forEach(b => {
+    b.fields.forEach(f => { counts[f] = (counts[f] || 0) + 1; });
+  });
+  const labels = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  if (labels.length === 0) return;
+
+  panel.style.display = 'block';
+  document.getElementById('chartTotalLabel').textContent = `${BURSARIES.filter(isBursaryActive).length} listed`;
+
+  if (fieldChartInstance) fieldChartInstance.destroy();
+  fieldChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: labels.map(l => counts[l]),
+        backgroundColor: '#827056',
+        borderRadius: 4,
+        maxBarThickness: 34
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#264C47' } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'IBM Plex Mono' } }, grid: { color: '#F1F0EA' } },
+        x: { ticks: { font: { family: 'Work Sans', size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// SUPABASE FETCHING FUNCTION WITH AUTOMATIC DEADLINE FILTERING
+async function fetchSupabaseBursaries() {
+  if (!supabaseClient) return null;
+  const todayStr = new Date().toISOString().split('T')[0];
+  
+  // Queries Supabase table for active bursaries where deadline_date >= TODAY
+  const { data, error } = await supabaseClient
+    .from('bursaries')
+    .select('*')
+    .gte('deadline_date', todayStr);
+
+  if (error || !data) return null;
+  return data;
+}
+
+async function boot(){
+  const debouncedFilter = debounce(() => renderGrid(), 220);
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchTerm = e.target.value;
+    debouncedFilter();
+  });
+  document.getElementById('savedToggle').addEventListener('click', () => {
+    showSavedOnly = !showSavedOnly;
+    document.getElementById('savedToggle').classList.toggle('active', showSavedOnly);
+    renderGrid();
+  });
+  document.getElementById('aiForm').addEventListener('submit', handleAISubmit);
+  initLetterAssistant();
+  initQuotes();
+
+  renderSkeletons('bursaryGrid', 6);
+  renderSkeletons('campaignGrid', 3);
+
+  let loadedFromSupabase = false;
+
+  // Attempt Supabase fetch first if configured
+  if (supabaseClient) {
+    try {
+      const supaBursaries = await fetchSupabaseBursaries();
+      if (supaBursaries && supaBursaries.length > 0) {
+        BURSARIES = supaBursaries;
+        loadedFromSupabase = true;
+      }
+    } catch (e) {
+      console.warn('Supabase fetch bypassed, falling back to API/Local dataset.');
+    }
+  }
+
+  try {
+    if (!loadedFromSupabase) {
+      const [bursariesRes, fieldsRes] = await Promise.all([
+        api('/api/bursaries'),
+        api('/api/fields')
+      ]);
+      // Merges response with 10 additional bursaries
+      BURSARIES = [...(bursariesRes.bursaries || []), ...ADDITIONAL_BURSARIES];
+      if (fieldsRes && fieldsRes.fields) {
+        ALL_FIELDS = fieldsRes.fields;
+      }
+      cacheCatalogueForOffline(BURSARIES, ALL_FIELDS);
+    } else {
+      // Extract unique fields dynamically from Supabase dataset
+      const fieldSet = new Set(['All']);
+      BURSARIES.forEach(b => (b.fields || []).forEach(f => fieldSet.add(f)));
+      ALL_FIELDS = Array.from(fieldSet);
+    }
+
+    // Filter dynamic field set to reflect active ones
+    const activeFieldsSet = new Set(['All']);
+    BURSARIES.filter(isBursaryActive).forEach(b => {
+      (b.fields || []).forEach(f => activeFieldsSet.add(f));
+    });
+    ALL_FIELDS = Array.from(activeFieldsSet);
+
+    setApiStatus(true);
+
+    const activeCount = BURSARIES.filter(b => b.status === 'open' && isBursaryActive(b)).length;
+    animateCountUp(document.getElementById('statCount'), activeCount);
+    animateCountUp(document.getElementById('statFields'), Math.max(0, ALL_FIELDS.length - 1));
+
+    initTicker();
+    initFilters();
+    renderGrid();
+    initRadar();
+    initPrivateFunding();
+initNotifications();
+initCopilot();
+initReadiness();
+    renderDeadlineRescue();
+    renderFundingDesk();
+    initNotify();
+    loadCampaigns();
+    renderFieldChart();
+  } catch (err) {
+    // Offline fallback: use the last successful catalogue before the small built-in dataset.
+    const cached = readOfflineCatalogue();
+    BURSARIES = cached?.bursaries?.length ? cached.bursaries : [...ADDITIONAL_BURSARIES];
+    ALL_FIELDS = cached?.fields?.length ? cached.fields : ['All', 'Commerce', 'Computer Science', 'Engineering', 'Science', 'Health Sciences'];
+    setApiStatus(false);
+    
+    animateCountUp(document.getElementById('statCount'), BURSARIES.filter(isBursaryActive).length);
+    animateCountUp(document.getElementById('statFields'), ALL_FIELDS.length - 1);
+
+    initTicker();
+    initFilters();
+    renderGrid();
+    initRadar();
+    initPrivateFunding();
+    renderDeadlineRescue();
+    renderFundingDesk();
+    initNotify();
+    loadCampaigns();
+    renderFieldChart();
+  }
+
+  initScrollReveal();
+}
+
+// App shell helpers: keep the last successful catalogue on-device for offline use.
+const OFFLINE_BURSARIES_KEY = 'fundisa-offline-bursaries-v1';
+const OFFLINE_FIELDS_KEY = 'fundisa-offline-fields-v1';
+function cacheCatalogueForOffline(bursaries, fields){
+  try {
+    localStorage.setItem(OFFLINE_BURSARIES_KEY, JSON.stringify(bursaries));
+    localStorage.setItem(OFFLINE_FIELDS_KEY, JSON.stringify(fields));
+  } catch {}
+}
+function readOfflineCatalogue(){
+  try {
+    const bursaries = JSON.parse(localStorage.getItem(OFFLINE_BURSARIES_KEY) || 'null');
+    const fields = JSON.parse(localStorage.getItem(OFFLINE_FIELDS_KEY) || 'null');
+    return Array.isArray(bursaries) && bursaries.length ? { bursaries, fields: Array.isArray(fields) ? fields : null } : null;
+  } catch { return null; }
+}
+
+const offlineBanner = document.getElementById('offlineBanner');
+function updateConnectionUI(){
+  if (offlineBanner) offlineBanner.classList.toggle('show', !navigator.onLine);
+}
+window.addEventListener('online', updateConnectionUI);
+window.addEventListener('offline', updateConnectionUI);
+updateConnectionUI();
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const btn = document.getElementById('installApp');
+  if (btn) btn.classList.add('show');
+});
+const installBtn = document.getElementById('installApp');
+if (installBtn) installBtn.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) {
+    document.getElementById('installTip')?.classList.add('show');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice.catch(() => {});
+  deferredInstallPrompt = null;
+  installBtn.classList.remove('show');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installTip')?.classList.remove('show');
+  document.getElementById('installApp')?.classList.remove('show');
+  if (typeof showToast === 'function') showToast('Fundisa is installed on your device.');
+});
+
+initStudentAuth();
+loadStudent();
+boot();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <a href="#top"><span class="mi">⌂</span><span>Home</span></a>
+  <a href="#browse"><span class="mi">⌕</span><span>Browse</span></a>
+  <a href="#radar"><span class="mi">✦</span><span>Radar</span></a>
+  <a href="#funding-desk"><span class="mi">♡</span><span>My Desk</span></a>
+</nav>
+</body>
+</html>

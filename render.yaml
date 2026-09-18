@@ -1,0 +1,56 @@
+services:
+  - type: web
+    name: fundisa-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: fundisa-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FUNDISA_DB_PATH
+        value: /var/data/fundisa.db
+      - key: PORT
+        value: 10000
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: APP_BASE_URL
+        sync: false
+      - key: PUBLIC_API_BASE_URL
+        sync: false
+      - key: FUNDISA_API_URL
+        sync: false
+      - key: MONITOR_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: AUTO_REPLACE_OUTDATED
+        value: "false"
+
+  - type: cron
+    name: fundisa-monitor
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    schedule: "0 3 * * *"
+    startCommand: node monitor.js
+    envVars:
+      - key: FUNDISA_API_URL
+        sync: false
+      - key: MONITOR_SECRET
+        sync: false

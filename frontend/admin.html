@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundisa • Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#264C47; --ink-soft:#51706C;
+    --paper:#FBFAF7; --paper-dim:#F1F0EA; --card:#FFFFFF;
+    --gold:#AE9572; --gold-dark:#655642; --gold-cta:#827056;
+    --green:#1F7A5C; --green-dark:#0F4A37;
+    --coral:#C7501F; --coral-dark:#7A3010;
+    --text:#1B1F2A; --text-muted:#5B6472; --border:#DEDBD1;
+    --radius:6px; --shadow:0 1px 2px rgba(38,76,71,0.06), 0 4px 14px rgba(38,76,71,0.06);
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--paper); color:var(--text); font-family:'Work Sans',sans-serif; line-height:1.5; }
+  h1,h2,h3{ font-family:'Fraunces',serif; font-weight:600; color:var(--ink); margin:0; }
+  button, input, select, textarea{ font-family:inherit; font-size:14px; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:var(--gold-dark); }
+  .wrap{ max-width:980px; margin:0 auto; padding:0 24px; }
+
+  /* LOGIN */
+  #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .login-card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:36px 32px; width:100%; max-width:360px; box-shadow:var(--shadow); }
+  .login-card h1{ font-size:22px; margin-top:6px; }
+  .field{ margin-top:16px; }
+  .field label{ display:block; font-size:12.5px; color:var(--text-muted); margin-bottom:5px; }
+  .field input, .field select, .field textarea{
+    width:100%; padding:9px 12px; border-radius:var(--radius); border:1px solid var(--border); background:var(--paper);
+  }
+  .field textarea{ resize:vertical; min-height:64px; }
+  .btn{
+    padding:10px 18px; border-radius:999px; border:1px solid var(--ink); background:var(--ink); color:#F4EFE2;
+    font-weight:500; cursor:pointer; font-size:13.5px;
+  }
+  .btn:hover{ background:var(--ink-soft); }
+  .btn:disabled{ opacity:0.55; cursor:default; }
+  .btn-ghost{ background:transparent; color:var(--ink); }
+  .btn-ghost:hover{ background:var(--paper-dim); }
+  .btn-danger{ border-color:var(--coral-dark); background:transparent; color:var(--coral-dark); }
+  .btn-danger:hover{ background:rgba(199,80,31,0.08); }
+  .btn-gold{ border-color:var(--gold-cta); background:var(--gold-cta); color:#fff; }
+  .btn-gold:hover{ background:#6E5D46; }
+  .error-text{ font-size:13px; color:var(--coral-dark); margin-top:12px; display:none; }
+
+  /* NAV */
+  nav{ background:var(--ink); color:#EDE7D6; }
+  .navrow{ display:flex; align-items:center; justify-content:space-between; padding:14px 24px; max-width:980px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:9px; font-family:'Work Sans',sans-serif; font-weight:700; font-size:16px; letter-spacing:0.02em; text-transform:uppercase; }
+  .brand-mark{ width:24px; height:24px; border-radius:50%; background:var(--gold-cta); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:12px; }
+
+  /* DASHBOARD */
+  #dashboard{ display:none; }
+  .stat-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0; }
+  .stat-card{ background:var(--paper-dim); border-radius:var(--radius); padding:16px 18px; }
+  .stat-card b{ font-family:'Fraunces',serif; font-size:24px; display:block; }
+  .stat-card span{ font-size:12.5px; color:var(--text-muted); }
+
+  .tabs{ display:flex; gap:6px; border-bottom:1px solid var(--border); margin-bottom:20px; }
+  .tab-btn{ padding:10px 4px; margin-right:20px; border:none; background:none; cursor:pointer; font-size:14px; color:var(--text-muted); border-bottom:2px solid transparent; }
+  .tab-btn.active{ color:var(--ink); border-bottom-color:var(--gold); font-weight:500; }
+
+  .section-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th{ text-align:left; font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); padding:8px 10px; border-bottom:1px solid var(--border); }
+  td{ padding:10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tr:hover td{ background:var(--paper-dim); }
+  .row-actions{ display:flex; gap:8px; }
+  .row-actions button{ font-size:12px; padding:5px 10px; border-radius:999px; border:1px solid var(--border); background:var(--card); cursor:pointer; }
+  .row-actions button:hover{ border-color:var(--gold); }
+  .status-badge{ font-family:'IBM Plex Mono',monospace; font-size:11px; padding:3px 8px; border-radius:4px; }
+  .status-open{ background:rgba(31,122,92,0.12); color:var(--green-dark); }
+  .status-upcoming{ background:rgba(174,149,114,0.22); color:var(--gold-dark); }
+  .status-closed{ background:rgba(91,100,114,0.14); color:var(--text-muted); }
+  .tag{ font-size:10.5px; font-family:'IBM Plex Mono',monospace; padding:2px 7px; border-radius:4px; background:var(--paper-dim); color:var(--ink-soft); margin:1px; display:inline-block; }
+
+  /* PANEL (add/edit form) */
+  .overlay{ display:none; position:fixed; inset:0; background:rgba(20,33,61,0.35); align-items:flex-start; justify-content:center; padding:40px 20px; overflow:auto; z-index:100; }
+  .overlay.show{ display:flex; }
+  .panel{ background:var(--card); border-radius:12px; padding:28px 30px; max-width:520px; width:100%; box-shadow:var(--shadow); }
+  .panel-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .panel-close{ background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .chip-suggest{ font-size:11px; font-family:'IBM Plex Mono',monospace; padding:3px 8px; border-radius:999px; border:1px solid var(--border); background:var(--paper); cursor:pointer; margin:3px 4px 0 0; display:inline-block; }
+  .panel-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+  .empty-note{ color:var(--text-muted); font-size:13.5px; padding:14px 0; }
+
+  footer{ text-align:center; padding:30px 0; font-size:12px; color:var(--text-muted); font-family:'IBM Plex Mono',monospace; }
+
+  /* TOAST */
+  .toast-stack{ position:fixed; bottom:20px; right:20px; z-index:300; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+  .toast{
+    background:var(--ink); color:#F4EFE2; padding:12px 18px; border-radius:8px; font-size:13.5px;
+    box-shadow:var(--shadow); max-width:320px; animation:toast-in .25s ease;
+  }
+  .toast.error{ background:var(--coral-dark); }
+  @keyframes toast-in{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
+
+  /* CONFIRM DIALOG (reuses .overlay/.panel) */
+  .confirm-panel{ max-width:380px; }
+  .confirm-panel p{ font-size:14px; color:var(--text-muted); margin:10px 0 20px; }
+  .confirm-actions{ display:flex; justify-content:flex-end; gap:10px; }
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <p class="eyebrow">Fundisa</p>
+    <h1>Admin login</h1>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginUsername">Username</label>
+        <input id="loginUsername" type="text" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn" type="submit" id="loginBtn" style="width:100%; margin-top:20px;">Log in</button>
+      <p class="error-text" id="loginError"></p>
+    </form>
+  </div>
+</div>
+
+<div id="dashboard">
+  <nav>
+    <div class="navrow">
+      <div class="brand"><span class="brand-mark">F</span>Fundisa admin</div>
+      <button class="btn btn-ghost" id="logoutBtn" style="color:#EDE7D6; border:1px solid #3C4B70;">Log out</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="stat-row">
+      <div class="stat-card"><b id="statTotal">•</b><span>total bursaries</span></div>
+      <div class="stat-card"><b id="statOpen">•</b><span>currently open</span></div>
+      <div class="stat-card"><b id="statSubs">•</b><span>notify subscribers</span></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="bursaries">Bursaries</button>
+      <button class="tab-btn" data-tab="campaigns">Fundraisers</button>
+      <button class="tab-btn" data-tab="subscribers">Subscribers</button>
+    </div>
+
+    <div id="bursariesTab">
+      <div class="section-top">
+        <div>
+          <p style="color:var(--text-muted); font-size:13.5px; margin:0;">Everything shown on the live site comes from this list.</p>
+          <p id="freshnessStatus" style="color:var(--text-muted); font-size:12px; margin:6px 0 0;"></p>
+          <p id="sourceSyncStatus" style="color:var(--text-muted); font-size:12px; margin:4px 0 0;"></p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+          <button class="btn btn-ghost" id="syncSourcesBtn">Sync public bursary sources</button>
+          <button class="btn btn-ghost" id="runFreshnessBtn">Check bursary freshness</button>
+          <button class="btn btn-gold" id="addBursaryBtn">+ Add bursary</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Name</th><th>Fields</th><th>Deadline</th><th>Status</th><th>Source</th><th></th></tr></thead>
+        <tbody id="bursariesBody"></tbody>
+      </table>
+    </div>
+
+    <div id="campaignsTab" style="display:none;">
+      <div class="section-top">
+        <p style="color:var(--text-muted); font-size:13.5px; margin:0;">Fundisa never processes donations • the "external URL" is the student's own verified fundraising page.</p>
+        <button class="btn btn-gold" id="addCampaignBtn">+ Add fundraiser</button>
+      </div>
+      <table>
+        <thead><tr><th>Student / campaign</th><th>Raised / Goal</th><th>Status</th><th></th></tr></thead>
+        <tbody id="campaignsBody"></tbody>
+      </table>
+    </div>
+
+    <div id="subscribersTab" style="display:none;">
+      <p style="color:var(--text-muted); font-size:13.5px;">Subscribers receive a confirmation email and can receive alerts when matching bursaries are added or updated. Outbound email requires the Resend settings in the backend.</p>
+      <table>
+        <thead><tr><th>Email</th><th>Field</th><th>Joined</th></tr></thead>
+        <tbody id="subscribersBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>FUNDISA ADMIN • CHANGES HERE UPDATE THE LIVE SITE IMMEDIATELY</footer>
+</div>
+
+<div class="overlay" id="formOverlay">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="panelTitle" style="font-size:19px;">Add bursary</h2>
+      <button class="panel-close" id="panelClose" aria-label="Close">✕</button>
+    </div>
+    <form id="bursaryForm">
+      <input type="hidden" id="bursaryId">
+      <div class="field"><label for="fName">Name</label><input id="fName" required></div>
+      <div class="field-row">
+        <div class="field"><label for="fProvider">Provider</label><input id="fProvider" required></div>
+        <div class="field"><label for="fStatus">Status</label>
+          <select id="fStatus"><option value="open">Open</option><option value="upcoming">Upcoming</option><option value="closed">Closed</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fFields">Fields of study (comma-separated)</label>
+        <input id="fFields" placeholder="Engineering, IT & Computer Science" required>
+        <div id="fieldSuggestions"></div>
+      </div>
+      <div class="field"><label for="fDeadline">Deadline (shown to students)</label><input id="fDeadline" placeholder="Closes 30 September 2026" required></div>
+      <div class="field">
+        <label for="fDeadlineDate">Exact closing date (optional • powers the "X days left" badge)</label>
+        <input id="fDeadlineDate" type="date">
+      </div>
+      <div class="field"><label for="fDescription">Description</label><textarea id="fDescription"></textarea></div>
+      <div class="field"><label for="fEligibility">Eligibility</label><textarea id="fEligibility"></textarea></div>
+      <div class="field"><label for="fUrl">Official URL</label><input id="fUrl" placeholder="https://..."></div>
+      <p class="error-text" id="formError"></p>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-ghost" id="panelCancel">Cancel</button>
+        <button type="submit" class="btn" id="formSubmit">Save bursary</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="campaignOverlay">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="campaignPanelTitle" style="font-size:19px;">Add fundraiser</h2>
+      <button class="panel-close" id="campaignPanelClose" aria-label="Close">✕</button>
+    </div>
+    <form id="campaignForm">
+      <input type="hidden" id="cId">
+      <div class="field"><label for="cStudentName">Student name</label><input id="cStudentName" required></div>
+      <div class="field"><label for="cTitle">Campaign title</label><input id="cTitle" placeholder="Help me cover my registration deposit" required></div>
+      <div class="field"><label for="cStory">Story</label><textarea id="cStory" required></textarea></div>
+      <div class="field-row">
+        <div class="field"><label for="cField">Field of study (optional)</label><input id="cField"></div>
+        <div class="field"><label for="cStatus">Status</label>
+          <select id="cStatus"><option value="active">Active</option><option value="closed">Closed</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="cGoal">Goal (Rand)</label><input id="cGoal" type="number" min="0" required></div>
+        <div class="field"><label for="cRaised">Raised so far (Rand)</label><input id="cRaised" type="number" min="0"></div>
+      </div>
+      <div class="field"><label for="cUrl">External donation URL</label><input id="cUrl" placeholder="https://www.backabuddy.co.za/..." required></div>
+      <p class="error-text" id="campaignFormError"></p>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-ghost" id="campaignPanelCancel">Cancel</button>
+        <button type="submit" class="btn" id="campaignFormSubmit">Save fundraiser</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const API_BASE = window.FUNDISA_API_BASE || 'https://fundisa-backend.onrender.com';
+let token = null; // kept in memory only • logging out or refreshing clears it, by design
+let bursaries = [];
+let campaigns = [];
+let knownFields = [];
+let editingId = null;
+let editingCampaignId = null;
+
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+function showToast(message, type = 'success'){
+  const stack = document.getElementById('toastStack');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'error' ? ' error' : '');
+  el.textContent = message;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+// Styled replacement for window.confirm(), matching the site's own panel
+// look instead of the browser's default popup. Returns a Promise<boolean>.
+function confirmDialog(message){
+  return new Promise((resolve) => {
+    document.getElementById('confirmMessage').textContent = message;
+    const overlay = document.getElementById('confirmOverlay');
+    const okBtn = document.getElementById('confirmOk');
+    const cancelBtn = document.getElementById('confirmCancel');
+    overlay.classList.add('show');
+
+    function cleanup(result){
+      overlay.classList.remove('show');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      overlay.removeEventListener('click', onOverlay);
+      resolve(result);
+    }
+    function onOk(){ cleanup(true); }
+    function onCancel(){ cleanup(false); }
+    function onOverlay(e){ if (e.target === overlay) cleanup(false); }
+
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+    overlay.addEventListener('click', onOverlay);
+  });
+}
+
+  {/* POP-OUT SIDE DRAWER FOR AI MATCHING */}
+  <div class="ai-backdrop" id="aiBackdrop"></div>
+  
+  <aside class="ai-drawer" id="aiDrawer" aria-label="AI Bursary Assistant">
+    <div>
+      <div class="ai-drawer-head">
+        <h2>✨ AI Bursary Matcher</h2>
+        <button type="button" class="ai-drawer-close" id="aiClose" aria-label="Close AI Assistant">&times;</button>
+      </div>
+      <p style={{ fontSize: '14px', color: '#B9C0D6', margin: '0 0 16px' }}>
+        Describe what you're studying (or want to study) and the assistant will match you to current bursaries in our database.
+      </p>
+      <form class="ai-form" id="aiForm">
+        <input type="text" id="aiInput" placeholder="e.g. 2nd year IT student, or 'want to study law'" aria-label="Describe your field of study" />
+        <button type="submit" id="aiSubmit">Find My Matches</button>
+      </form>
+      <p class="ai-hint">Powered by Gemini Flash via Fundisa • strictly matches against open database entries.</p>
+      <p class="ai-error" id="aiError"></p>
+      <div class="ai-loading" id="aiLoading">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Searching the catalogue…</span>
+      </div>
+      <div class="ai-results" id="aiResults"></div>
+    </div>
+  </aside>
+
+  <footer>
+    <p class="wrap">FUNDISA • BUILT BY NQOBILE · DATA SERVED FROM THE FUNDISA BACKEND · ALWAYS CONFIRM DETAILS ON THE OFFICIAL PROVIDER SITE BEFORE APPLYING</p>
+  </footer>
+
+  <script>{`
+    const API_BASE = window.FUNDISA_API_BASE || 'https://fundisa-backend.onrender.com';
+  `}</script>
+</>
+
+// ---------- LOGIN ----------
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+  errorEl.style.display = 'none';
+  btn.disabled = true;
+  try {
+    const data = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+    token = data.token;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    await loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message || "Couldn't reach the backend. Is it running?";
+    errorEl.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  token = null;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPassword').value = '';
+});
+
+// ---------- TABS ----------
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.getElementById('bursariesTab').style.display = tab === 'bursaries' ? 'block' : 'none';
+    document.getElementById('campaignsTab').style.display = tab === 'campaigns' ? 'block' : 'none';
+    document.getElementById('subscribersTab').style.display = tab === 'subscribers' ? 'block' : 'none';
+  });
+});
+
+// ---------- LOAD ----------
+async function loadDashboard() {
+  const [bRes, fRes, sRes, cRes] = await Promise.all([
+    api('/api/bursaries'),
+    api('/api/fields'),
+    api('/api/notify'),
+    api('/api/campaigns')
+  ]);
+  bursaries = bRes.bursaries;
+  knownFields = fRes.fields.filter(f => f !== 'All');
+  campaigns = cRes.campaigns;
+  renderStats(bursaries, sRes.subscribers);
+  renderBursariesTable();
+  renderSubscribersTable(sRes.subscribers);
+  renderCampaignsTable();
+}
+
+function renderStats(bList, subs) {
+  document.getElementById('statTotal').textContent = bList.length;
+  document.getElementById('statOpen').textContent = bList.filter(b => b.status === 'open').length;
+  document.getElementById('statSubs').textContent = subs.length;
+}
+
+function renderBursariesTable() {
+  const body = document.getElementById('bursariesBody');
+  if (bursaries.length === 0) {
+    body.innerHTML = `<tr><td colspan="6" class="empty-note">No bursaries yet • add the first one.</td></tr>`;
+    return;
+  }
+  body.innerHTML = bursaries.map(b => `
+    <tr>
+      <td><strong>${escapeHtml(b.name)}</strong><br><span style="color:var(--text-muted); font-size:12px;">${escapeHtml(b.provider)}</span></td>
+      <td>${b.fields.map(f => `<span class="tag">${escapeHtml(f)}</span>`).join('')}</td>
+      <td>${escapeHtml(b.deadline)}</td>
+      <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+      <td><span class="tag">${escapeHtml(b.source_type === 'public_web' ? 'Public web' : 'Fundisa')}</span>${b.last_source_sync_at ? `<br><span style="color:var(--text-muted);font-size:11px;">${escapeHtml(b.last_source_sync_at)}</span>` : ''}</td>
+      <td>
+        <div class="row-actions">
+          <button data-action="edit" data-id="${b.id}">Edit</button>
+          <button data-action="delete" data-id="${b.id}">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  body.querySelectorAll('[data-action="edit"]').forEach(btn =>
+    btn.addEventListener('click', () => openForm(bursaries.find(b => b.id === btn.dataset.id)))
+  );
+  body.querySelectorAll('[data-action="delete"]').forEach(btn =>
+    btn.addEventListener('click', () => handleDelete(btn.dataset.id))
+  );
+}
+
+function renderSubscribersTable(subs) {
+  const body = document.getElementById('subscribersBody');
+  if (subs.length === 0) {
+    body.innerHTML = `<tr><td colspan="3" class="empty-note">No subscribers yet.</td></tr>`;
+    return;
+  }
+  body.innerHTML = subs.map(s => `
+    <tr><td>${escapeHtml(s.email)}</td><td>${escapeHtml(s.field || 'Any field')}</td><td>${escapeHtml(s.created_at)}</td></tr>
+  `).join('');
+}
+
+function formatRandAdmin(n){ return 'R' + Number(n).toLocaleString('en-ZA'); }
+
+function renderCampaignsTable() {
+  const body = document.getElementById('campaignsBody');
+  if (campaigns.length === 0) {
+    body.innerHTML = `<tr><td colspan="4" class="empty-note">No fundraisers yet • add one for a student who needs it.</td></tr>`;
+    return;
+  }
+  body.innerHTML = campaigns.map(c => `
+    <tr>
+      <td><strong>${escapeHtml(c.title)}</strong><br><span style="color:var(--text-muted); font-size:12px;">${escapeHtml(c.student_name)}${c.field ? ' · ' + escapeHtml(c.field) : ''}</span></td>
+      <td>${formatRandAdmin(c.raised_amount)} / ${formatRandAdmin(c.goal_amount)}</td>
+      <td><span class="status-badge status-${c.status === 'active' ? 'open' : 'closed'}">${c.status}</span></td>
+      <td>
+        <div class="row-actions">
+          <button data-caction="edit" data-id="${c.id}">Edit</button>
+          <button data-caction="delete" data-id="${c.id}">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  body.querySelectorAll('[data-caction="edit"]').forEach(btn =>
+    btn.addEventListener('click', () => openCampaignForm(campaigns.find(c => c.id === btn.dataset.id)))
+  );
+  body.querySelectorAll('[data-caction="delete"]').forEach(btn =>
+    btn.addEventListener('click', () => handleCampaignDelete(btn.dataset.id))
+  );
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+// ---------- ADD / EDIT PANEL ----------
+function openForm(bursary) {
+  editingId = bursary ? bursary.id : null;
+  document.getElementById('panelTitle').textContent = bursary ? 'Edit bursary' : 'Add bursary';
+  document.getElementById('bursaryId').value = bursary ? bursary.id : '';
+  document.getElementById('fName').value = bursary ? bursary.name : '';
+  document.getElementById('fProvider').value = bursary ? bursary.provider : '';
+  document.getElementById('fStatus').value = bursary ? bursary.status : 'open';
+  document.getElementById('fFields').value = bursary ? bursary.fields.join(', ') : '';
+  document.getElementById('fDeadline').value = bursary ? bursary.deadline : '';
+  document.getElementById('fDeadlineDate').value = bursary ? (bursary.deadline_date || '') : '';
+  document.getElementById('fDescription').value = bursary ? (bursary.description || '') : '';
+  document.getElementById('fEligibility').value = bursary ? (bursary.eligibility || '') : '';
+  document.getElementById('fUrl').value = bursary ? (bursary.url || '') : '';
+  document.getElementById('formError').style.display = 'none';
+
+  const suggestBox = document.getElementById('fieldSuggestions');
+  suggestBox.innerHTML = knownFields.map(f => `<span class="chip-suggest" data-field="${escapeHtml(f)}">+ ${escapeHtml(f)}</span>`).join('');
+  suggestBox.querySelectorAll('.chip-suggest').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const input = document.getElementById('fFields');
+      const current = input.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (!current.includes(chip.dataset.field)) current.push(chip.dataset.field);
+      input.value = current.join(', ');
+    });
+  });
+
+  document.getElementById('formOverlay').classList.add('show');
+}
+
+function closeForm() {
+  document.getElementById('formOverlay').classList.remove('show');
+  editingId = null;
+}
+
+document.getElementById('syncSourcesBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('syncSourcesBtn');
+  const status = document.getElementById('sourceSyncStatus');
+  btn.disabled = true;
+  status.textContent = 'Pulling the latest bursary feed…';
+  try {
+    const result = await api('/api/maintenance/sync-bursaries', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    status.textContent = `${result.fetched} public records discovered · ${result.imported} new · ${result.updated} updated · ${result.skipped} skipped.`;
+    await loadDashboard();
+    showToast('Public bursary sources synced');
+  } catch (err) {
+    status.textContent = err.message || 'Source sync failed.';
+    showToast(status.textContent, 'error');
+  } finally { btn.disabled = false; }
+});
+
+document.getElementById('runFreshnessBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('runFreshnessBtn');
+  const status = document.getElementById('freshnessStatus');
+  btn.disabled = true;
+  status.textContent = 'Checking current provider information…';
+  try {
+    const result = await api('/api/maintenance/check-bursaries', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    const closed = result.results.filter(r => String(r.action || '').includes('closed')).length;
+    const replaced = result.results.filter(r => String(r.action || '').includes('replaced_with')).length;
+    status.textContent = `Checked ${result.results.length} entries · ${closed} closed · ${replaced} replacement(s) added.`;
+    await loadDashboard();
+    showToast('Bursary freshness check complete');
+  } catch (err) {
+    status.textContent = err.message || 'Freshness check failed.';
+    showToast(status.textContent, 'error');
+  } finally { btn.disabled = false; }
+});
+
+document.getElementById('addBursaryBtn').addEventListener('click', () => openForm(null));
+document.getElementById('panelClose').addEventListener('click', closeForm);
+document.getElementById('panelCancel').addEventListener('click', closeForm);
+document.getElementById('formOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'formOverlay') closeForm();
+});
+
+document.getElementById('bursaryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('formError');
+  const submitBtn = document.getElementById('formSubmit');
+  errorEl.style.display = 'none';
+
+  const fields = document.getElementById('fFields').value.split(',').map(s => s.trim()).filter(Boolean);
+  if (fields.length === 0) {
+    errorEl.textContent = 'Add at least one field of study.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const payload = {
+    name: document.getElementById('fName').value.trim(),
+    provider: document.getElementById('fProvider').value.trim(),
+    status: document.getElementById('fStatus').value,
+    fields,
+    deadline: document.getElementById('fDeadline').value.trim(),
+    deadline_date: document.getElementById('fDeadlineDate').value || null,
+    description: document.getElementById('fDescription').value.trim(),
+    eligibility: document.getElementById('fEligibility').value.trim(),
+    url: document.getElementById('fUrl').value.trim()
+  };
+
+  submitBtn.disabled = true;
+  try {
+    if (editingId) {
+      await api(`/api/bursaries/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
+      showToast('Bursary updated');
+    } else {
+      await api('/api/bursaries', { method: 'POST', body: JSON.stringify(payload) });
+      showToast('Bursary added');
+    }
+    closeForm();
+    await loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message || 'Could not save. Try again.';
+    errorEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+async function handleDelete(id) {
+  const bursary = bursaries.find(b => b.id === id);
+  const ok = await confirmDialog(`Delete "${bursary ? bursary.name : id}"? This removes it from the live site immediately.`);
+  if (!ok) return;
+  try {
+    await api(`/api/bursaries/${id}`, { method: 'DELETE' });
+    await loadDashboard();
+    showToast('Bursary deleted');
+  } catch (err) {
+    showToast(err.message || 'Could not delete that bursary.', 'error');
+  }
+}
+
+// ---------- CAMPAIGN ADD / EDIT PANEL ----------
+function openCampaignForm(campaign) {
+  editingCampaignId = campaign ? campaign.id : null;
+  document.getElementById('campaignPanelTitle').textContent = campaign ? 'Edit fundraiser' : 'Add fundraiser';
+  document.getElementById('cId').value = campaign ? campaign.id : '';
+  document.getElementById('cStudentName').value = campaign ? campaign.student_name : '';
+  document.getElementById('cTitle').value = campaign ? campaign.title : '';
+  document.getElementById('cStory').value = campaign ? campaign.story : '';
+  document.getElementById('cField').value = campaign ? (campaign.field || '') : '';
+  document.getElementById('cStatus').value = campaign ? campaign.status : 'active';
+  document.getElementById('cGoal').value = campaign ? campaign.goal_amount : '';
+  document.getElementById('cRaised').value = campaign ? campaign.raised_amount : 0;
+  document.getElementById('cUrl').value = campaign ? campaign.external_url : '';
+  document.getElementById('campaignFormError').style.display = 'none';
+  document.getElementById('campaignOverlay').classList.add('show');
+}
+
+function closeCampaignForm() {
+  document.getElementById('campaignOverlay').classList.remove('show');
+  editingCampaignId = null;
+}
+
+document.getElementById('addCampaignBtn').addEventListener('click', () => openCampaignForm(null));
+document.getElementById('campaignPanelClose').addEventListener('click', closeCampaignForm);
+document.getElementById('campaignPanelCancel').addEventListener('click', closeCampaignForm);
+document.getElementById('campaignOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'campaignOverlay') closeCampaignForm();
+});
+
+document.getElementById('campaignForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('campaignFormError');
+  const submitBtn = document.getElementById('campaignFormSubmit');
+  errorEl.style.display = 'none';
+
+  const goal = Number(document.getElementById('cGoal').value);
+  if (!goal || goal <= 0) {
+    errorEl.textContent = 'Enter a goal amount greater than 0.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const payload = {
+    student_name: document.getElementById('cStudentName').value.trim(),
+    title: document.getElementById('cTitle').value.trim(),
+    story: document.getElementById('cStory').value.trim(),
+    field: document.getElementById('cField').value.trim(),
+    status: document.getElementById('cStatus').value,
+    goal_amount: goal,
+    raised_amount: Number(document.getElementById('cRaised').value) || 0,
+    external_url: document.getElementById('cUrl').value.trim()
+  };
+
+  submitBtn.disabled = true;
+  try {
+    if (editingCampaignId) {
+      await api(`/api/campaigns/${editingCampaignId}`, { method: 'PUT', body: JSON.stringify(payload) });
+      showToast('Fundraiser updated');
+    } else {
+      await api('/api/campaigns', { method: 'POST', body: JSON.stringify(payload) });
+      showToast('Fundraiser added');
+    }
+    closeCampaignForm();
+    await loadDashboard();
+  } catch (err) {
+    errorEl.textContent = err.message || 'Could not save. Try again.';
+    errorEl.style.display = 'block';
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+async function handleCampaignDelete(id) {
+  const campaign = campaigns.find(c => c.id === id);
+  const ok = await confirmDialog(`Delete "${campaign ? campaign.title : id}"? This removes it from the live site immediately.`);
+  if (!ok) return;
+  try {
+    await api(`/api/campaigns/${id}`, { method: 'DELETE' });
+    await loadDashboard();
+    showToast('Fundraiser deleted');
+  } catch (err) {
+    showToast(err.message || 'Could not delete that fundraiser.', 'error');
+  }
+}
+</script>
+<div class="overlay" id="confirmOverlay">
+  <div class="panel confirm-panel">
+    <h2 id="confirmTitle" style="font-size:18px;">Are you sure?</h2>
+    <p id="confirmMessage"></p>
+    <div class="confirm-actions">
+      <button type="button" class="btn btn-ghost" id="confirmCancel">Cancel</button>
+      <button type="button" class="btn" id="confirmOk" style="background:var(--coral-dark); border-color:var(--coral-dark);">Delete</button>
+    </div>
+  </div>
+</div>
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+</body>
+</html>

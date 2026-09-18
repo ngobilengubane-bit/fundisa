@@ -1,0 +1,17 @@
+{
+  "name": "fundisa-backend",
+  "version": "1.1.1",
+  "description": "Backend API for Fundisa - a bursary notification site for South African students",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "monitor": "node monitor.js",
+    "sync-bursaries": "node --env-file=.env -e \"import('./source-sync.js').then(async ({syncPublicBursarySources})=>console.log(await syncPublicBursarySources()))\"",
+    "dev": "node --watch server.js",
+    "check": "node --check server.js && node --check auth.js && node --check db.js && node --check monitor.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

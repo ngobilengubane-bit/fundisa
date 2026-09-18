@@ -1,0 +1,64 @@
+{
+  "name": "Fundisa • Bursaries, funded",
+  "short_name": "Fundisa",
+  "description": "Find open South African bursaries by field of study, get AI-matched, and draft your motivational letter.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FBFAF7",
+  "theme_color": "#264C47",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "id": "/",
+  "orientation": "portrait-primary",
+  "categories": [
+    "education",
+    "finance",
+    "productivity"
+  ],
+  "shortcuts": [
+    {
+      "name": "Funding Radar",
+      "short_name": "Radar",
+      "url": "/#radar",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Browse bursaries",
+      "short_name": "Browse",
+      "url": "/#browse",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "My Funding Desk",
+      "short_name": "My Desk",
+      "url": "/#funding-desk",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
