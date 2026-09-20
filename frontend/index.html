@@ -1127,8 +1127,9 @@
 <script>
 // Point this at wherever the backend is running.
 // Local dev default matches backend/server.js's default port.
-const DEFAULT_API_BASE = (window.location.protocol === 'file:' || ['localhost','127.0.0.1'].includes(window.location.hostname)) ? 'http://localhost:5000' : (window.location.hostname.endsWith('.onrender.com') ? window.location.origin : 'https://fundisa-backend.onrender.com');
-const API_BASE = window.FUNDISA_API_BASE || DEFAULT_API_BASE;
+const DEFAULT_API_BASE = (window.location.protocol === 'file:' || ['localhost','127.0.0.1'].includes(window.location.hostname))
+  ? 'http://localhost:5000'
+  : 'https://fundisa-backend.onrender.com';
 
 // OPTIONAL SUPABASE CONFIGURATION:
 // Replace these values with your real Supabase credentials if fetching live directly from Supabase.
