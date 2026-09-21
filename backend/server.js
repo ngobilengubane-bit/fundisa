@@ -494,52 +494,162 @@ async function callGemini(systemPrompt, userMessage, maxOutputTokens) {
 }
 
 
-async function callGeminiText(systemPrompt, contents, { googleSearch = false, maxOutputTokens = 1400, json = false } = {}) {
-  if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is not configured');
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_API_KEY },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: Array.isArray(contents) ? contents : [{ role: 'user', parts: [{ text: String(contents) }] }],
-      ...(googleSearch ? { tools: [{ google_search: {} }] } : {}),
-      generationConfig: { maxOutputTokens, ...(json ? { responseMimeType: 'application/json' } : {}) }
-    })
-  });
-  if (!response.ok) throw new Error(`Gemini API error ${response.status}: ${await response.text()}`);
-  const data = await response.json();
-  const candidate = data.candidates?.[0];
-  const text = candidate?.content?.parts?.find(p => p.text)?.text;
-  if (!text) throw new Error('Gemini returned no text');
-  return { text, groundingMetadata: candidate?.groundingMetadata || data.groundingMetadata || null };
-}
-
-function groundingSources(metadata) {
-  const chunks = metadata?.groundingChunks || [];
-  return chunks.map(c => c.web).filter(Boolean).map(w => ({ url: w.uri, title: w.title || w.uri })).filter((v, i, a) => a.findIndex(x => x.url === v.url) === i).slice(0, 5);
-}
-
-async function syncBursarySources(req, res) {
-  const admin = requireAdmin(req);
-  const monitorAuthorized = !!MONITOR_SECRET && req.headers['x-monitor-secret'] === MONITOR_SECRET;
-  if (!admin && !monitorAuthorized) return sendJSON(res, 401, { error: 'Unauthorized' });
-
-  try {
-    const result = await syncPublicBursarySources();
-    for (const item of result.importedItems || []) {
-      const row = db.prepare('SELECT * FROM bursaries WHERE id=?').get(item.id);
-      if (row) void notifySubscribersAboutBursary(rowToBursary(row), 'new');
-    }
-    for (const item of result.updatedItems || []) {
-      if (!item.materiallyChanged) continue;
-      const row = db.prepare('SELECT * FROM bursaries WHERE id=?').get(item.id);
-      if (row && ['open', 'upcoming'].includes(row.status)) void notifySubscribersAboutBursary(rowToBursary(row), 'update');
-    }
-    sendJSON(res, 200, result);
-  } catch (err) {
-    console.error('Bursary source sync failed:', err.message);
-    sendJSON(res, 503, { error: err.message });
+async function callGeminiText(
+  systemPrompt,
+  contents,
+  {
+    googleSearch = false,
+    maxOutputTokens = 1400,
+    json = false
+  } = {}
+) {
+  if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not configured');
   }
+
+  const maxRetries = 2;
+
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const requestBody = {
+    systemInstruction: {
+      parts: [{ text: systemPrompt }]
+    },
+    contents: Array.isArray(contents)
+      ? contents
+      : [
+          {
+            role: 'user',
+            parts: [{ text: String(contents) }]
+          }
+        ],
+    ...(googleSearch
+      ? {
+          tools: [{ google_search: {} }]
+        }
+      : {}),
+    generationConfig: {
+      maxOutputTokens,
+      ...(json
+        ? {
+            responseMimeType: 'application/json'
+          }
+        : {})
+    }
+  };
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': GEMINI_API_KEY
+          },
+          body: JSON.stringify(requestBody)
+        }
+      );
+
+      const responseText = await response.text();
+
+      if (!response.ok) {
+        // Do NOT repeatedly retry quota errors.
+        // Retrying a free-tier quota error immediately will not create
+        // additional quota and can make the situation worse.
+        if (response.status === 429) {
+          const error = new Error(
+            'GEMINI_QUOTA_EXCEEDED: Gemini free-tier quota has been reached.'
+          );
+          error.code = 'GEMINI_QUOTA_EXCEEDED';
+          error.status = 429;
+          throw error;
+        }
+
+        // Temporary Gemini/server overload.
+        // Retry with exponential backoff.
+        const retryable =
+          response.status === 500 ||
+          response.status === 502 ||
+          response.status === 503 ||
+          response.status === 504;
+
+        if (retryable && attempt < maxRetries) {
+          const delay = 1500 * Math.pow(2, attempt);
+
+          console.warn(
+            `Gemini temporary error ${response.status}. ` +
+            `Retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`
+          );
+
+          await sleep(delay);
+          continue;
+        }
+
+        const error = new Error(
+          `Gemini API error ${response.status}: ${responseText}`
+        );
+
+        error.status = response.status;
+        error.code = retryable
+          ? 'GEMINI_TEMPORARILY_UNAVAILABLE'
+          : 'GEMINI_API_ERROR';
+
+        throw error;
+      }
+
+      let data;
+
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        const error = new Error('Gemini returned an invalid response.');
+        error.code = 'GEMINI_INVALID_RESPONSE';
+        throw error;
+      }
+
+      const candidate = data.candidates?.[0];
+
+      const text = candidate?.content?.parts
+        ?.find(part => part.text)
+        ?.text;
+
+      if (!text) {
+        const error = new Error('Gemini returned no text.');
+        error.code = 'GEMINI_NO_TEXT';
+        throw error;
+      }
+
+      return {
+        text,
+        groundingMetadata:
+          candidate?.groundingMetadata ||
+          data.groundingMetadata ||
+          null
+      };
+    } catch (error) {
+      // Network errors can be temporary too.
+      if (
+        !error.status &&
+        attempt < maxRetries
+      ) {
+        const delay = 1500 * Math.pow(2, attempt);
+
+        console.warn(
+          `Gemini network error. ` +
+          `Retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`
+        );
+
+        await sleep(delay);
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  throw new Error('Gemini request failed after retries.');
 }
 
 // ---------- route handlers ----------
