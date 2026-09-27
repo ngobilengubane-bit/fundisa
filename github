@@ -1,0 +1,33 @@
+name: Fundisa Daily Notifications
+
+on:
+  schedule:
+    # Runs every day at 05:00 South Africa time (03:00 UTC)
+    - cron: "0 3 * * *"
+
+  # Allows you to run it manually from GitHub
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Fundisa
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      - name: Run Fundisa notification monitor
+        working-directory: backend
+        env:
+          FUNDISA_API_URL: ${{ secrets.FUNDISA_API_URL }}
+          MONITOR_SECRET: ${{ secrets.MONITOR_SECRET }}
+        run: node monitor.js
